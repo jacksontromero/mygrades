@@ -20,18 +20,13 @@ export default function ServerSync(params: {
   const mutated = useRef<boolean>(false);
 
   useEffect(() => {
-    // every 10 seconds, send the whole store to the server
+    // every 60 seconds as a backup to visibilitychange, send the whole store to the server
     if (wholeStore._hasHydrated) {
-      console.log("starting sync");
-
       mutated.current = true;
       currentClasses.current = wholeStore.classes;
 
-      console.log(mutated.current);
-
       if (!intervalRef.current) {
         intervalRef.current = setInterval(() => {
-          console.log("sending store to server", mutated.current);
           if (mutated.current) {
             updateUserStore({
               classes: currentClasses.current,
@@ -39,10 +34,22 @@ export default function ServerSync(params: {
             });
             mutated.current = false;
           }
-        }, 10000);
+        }, 60000);
       }
     }
   }, [wholeStore]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        console.log("sending store to server");
+        updateUserStore({
+          classes: currentClasses.current,
+          schemaVersion: 0,
+        });
+      }
+    });
+  }, []);
 
   return <></>;
 }

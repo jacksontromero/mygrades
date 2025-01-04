@@ -47,6 +47,10 @@ export const savedStores = createTable("saved_store", {
     .primaryKey()
     .references(() => users.id),
 
+  updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+    () => new Date(),
+  ),
+
   data: jsonb("data").$type<serverDataStore>().notNull(),
 });
 

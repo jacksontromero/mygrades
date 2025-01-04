@@ -4,17 +4,17 @@ import { useEffect } from "react";
 import { serverDataStore, useDataStore } from "./store";
 
 export default function PopulateStore(params: {
-  userStore: serverDataStore | null;
+  serverStore: serverDataStore | null;
   createUserStore: (data: serverDataStore) => Promise<void>;
 }) {
-  const { userStore, createUserStore } = params;
+  const { serverStore, createUserStore } = params;
 
   const isHydrated = useDataStore((state) => state._hasHydrated);
 
   useEffect(() => {
-    if (userStore) {
+    if (serverStore) {
       useDataStore.setState((state) => {
-        state.classes = userStore.classes;
+        state.classes = serverStore.classes;
       });
     } else {
       // if user authenticated, local state hydrated, and no existing store, send state to server
@@ -28,7 +28,7 @@ export default function PopulateStore(params: {
         createUserStore(stateToStore);
       }
     }
-  }, [isHydrated, userStore, createUserStore]);
+  }, [isHydrated, serverStore, createUserStore]);
 
   return <></>;
 }

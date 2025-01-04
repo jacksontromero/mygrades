@@ -19,6 +19,11 @@ export async function getUserStore(): Promise<serverDataStore | null> {
     return null;
   }
 
+  console.log(
+    "returning user store",
+    userStore.data.classes["83d578ea-dfdd-40d0-a1f7-1ee820c37f12"]?.weights,
+  );
+
   return userStore.data;
 }
 

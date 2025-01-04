@@ -6,7 +6,7 @@ import {
   createUserStore,
   updateUserStore,
 } from "@/server/authorized-queries";
-import PopulateStore from "./ClientStoreManager";
+import PopulateStore from "./PopulateStore";
 import { serverDataStore } from "./store";
 import ServerSync from "./ServerSync";
 
@@ -14,7 +14,7 @@ export default async function StoreManager() {
   const session = await auth();
 
   if (session) {
-    const userStore = await getUserStore();
+    const serverStore = await getUserStore();
 
     async function passedCreateUserStoreFn(data: serverDataStore) {
       "use server";
@@ -29,7 +29,7 @@ export default async function StoreManager() {
     return (
       <div>
         <PopulateStore
-          userStore={userStore}
+          serverStore={serverStore}
           createUserStore={passedCreateUserStoreFn}
         />
         <ServerSync updateUserStore={passedUpdateUserStoreFn} />
