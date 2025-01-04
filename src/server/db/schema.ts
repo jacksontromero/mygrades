@@ -1,3 +1,4 @@
+import { serverDataStore } from "@/data/store";
 import { relations, sql } from "drizzle-orm";
 import {
   index,
@@ -46,7 +47,7 @@ export const savedStores = createTable("saved_store", {
     .primaryKey()
     .references(() => users.id),
 
-  data: jsonb("data").notNull(),
+  data: jsonb("data").$type<serverDataStore>().notNull(),
 });
 
 export const users = createTable("user", {

@@ -46,7 +46,6 @@ export default function ClassOptions(params: { existingClassId: string }) {
     formData: ClassFormData,
     event: BaseSyntheticEvent<object, any, any> | undefined,
   ) => {
-    console.log("formData", formData);
     event?.preventDefault();
 
     editClass(existingClass.id, {

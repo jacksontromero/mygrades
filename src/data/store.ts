@@ -36,6 +36,11 @@ export type schoolClass = {
   targetGrade: number;
 };
 
+export type serverDataStore = {
+  classes: Record<string, schoolClass>;
+  schemaVersion: number;
+};
+
 export type globalDataStore = {
   _hasHydrated: boolean;
   setHasHydrated: (hasHydrated: boolean) => void;
@@ -95,10 +100,10 @@ export const defaultBucket: () => bucket = () => ({
 
 export const useDataStore = create<globalDataStore>()(
   persist(
-    immer((set, _get) => ({
+    immer((set) => ({
       classes: {} as Record<string, schoolClass>,
 
-      _hasHydrated: false,
+      _hasHydrated: false as boolean,
       setHasHydrated: (hasHydrated: boolean) =>
         set((state) => {
           state._hasHydrated = hasHydrated;
