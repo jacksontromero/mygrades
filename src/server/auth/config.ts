@@ -38,7 +38,13 @@ declare module "next-auth" {
  */
 export const authConfig = {
   providers: [
-    GoogleProvider,
+    GoogleProvider({
+      authorization: {
+        params: {
+          prompt: "consent",
+        },
+      },
+    }),
     /**
      * ...add more providers here.
      *

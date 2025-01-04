@@ -7,6 +7,7 @@ import { GeistSans } from "geist/font/sans";
 import Topbar from "@/components/Topbar";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
+import StoreManager from "@/data/StoreManager";
 
 export const metadata: Metadata = {
   title: "Final Grade Calculator",
@@ -34,7 +35,7 @@ export default async function RootLayout({
           <SidebarProvider defaultOpen={defaultOpen}>
             <SessionProvider>
               <AppSidebar />
-
+              <StoreManager />
               <main className="w-full">
                 <Topbar />
                 {children}
