@@ -4,7 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/sidebar/AppSidebar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GeistSans } from "geist/font/sans";
-import Topbar from "@/components/Topbar";
+import Topbar from "@/components/topbar/Topbar";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
 import StoreManager from "@/data/StoreManager";

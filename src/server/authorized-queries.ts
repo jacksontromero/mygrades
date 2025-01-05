@@ -19,47 +19,34 @@ export async function getUserStore(): Promise<serverDataStore | null> {
     return null;
   }
 
-  console.log(
-    "returning user store",
-    userStore.data.classes["83d578ea-dfdd-40d0-a1f7-1ee820c37f12"]?.weights,
-  );
-
   return userStore.data;
-}
-
-export async function createUserStore(data: serverDataStore) {
-  const session = await auth();
-
-  if (!session) {
-    throw new Error("Not authenticated");
-  }
-
-  await db.insert(savedStores).values({
-    createdById: session.user.id,
-    data: data,
-  });
-
-  return;
 }
 
 export async function updateUserStore(data: serverDataStore) {
   const session = await auth();
 
-  console.log(
-    "updating user store",
-    data.classes["83d578ea-dfdd-40d0-a1f7-1ee820c37f12"]?.weights,
-  );
-
   if (!session) {
     throw new Error("Not authenticated");
   }
 
-  await db
-    .update(savedStores)
-    .set({
+  // check that the current user is in the store, if not add them
+  const res = await db.query.savedStores.findFirst({
+    where: (model, { eq }) => eq(model.createdById, session.user.id),
+  });
+
+  if (!res) {
+    await db.insert(savedStores).values({
+      createdById: session.user.id,
       data: data,
-    })
-    .where(eq(savedStores.createdById, session.user.id));
+    });
+  } else {
+    await db
+      .update(savedStores)
+      .set({
+        data: data,
+      })
+      .where(eq(savedStores.createdById, session.user.id));
+  }
 
   return;
 }
