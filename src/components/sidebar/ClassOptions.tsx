@@ -69,7 +69,15 @@ export default function ClassOptions(params: { existingClassId: string }) {
 
   return (
     <div>
-      <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+      <Dialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          if (open == false) {
+            form.reset();
+          }
+        }}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction>
@@ -78,15 +86,12 @@ export default function ClassOptions(params: { existingClassId: string }) {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent side="right" align="start">
-            <DropdownMenuItem className="hover:cursor-pointer">
+            <DropdownMenuItem>
               <DialogTrigger>
                 <span>Edit Class</span>
               </DialogTrigger>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="hover:cursor-pointer"
-              onClick={() => deleteClass(existingClass.id)}
-            >
+            <DropdownMenuItem onClick={() => deleteClass(existingClass.id)}>
               <span>Delete Class</span>
             </DropdownMenuItem>
           </DropdownMenuContent>

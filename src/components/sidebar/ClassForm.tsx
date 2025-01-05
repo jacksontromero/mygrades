@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   Form,
@@ -7,20 +7,20 @@ import {
   FormField,
   FormItem,
   FormLabel,
-} from '../ui/form';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
-import { Separator } from '../ui/separator';
-import { SubmitHandler, useFieldArray, UseFormReturn } from 'react-hook-form';
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { SubmitHandler, useFieldArray, UseFormReturn } from "react-hook-form";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '../ui/tooltip';
-import { Trash2Icon } from 'lucide-react';
-import { z } from 'zod';
-import { bucket, defaultBucket } from '@/data/store';
+} from "../ui/tooltip";
+import { Trash2Icon } from "lucide-react";
+import { z } from "zod";
+import { bucket, defaultBucket } from "@/data/store";
 
 export const ClassFormSchema = z.object({
   courseName: z.string().min(1),
@@ -31,7 +31,7 @@ export const ClassFormSchema = z.object({
         id: z.string().min(1),
         name: z.string().min(1),
         percentage: z.coerce.number().min(0).max(100),
-        drops: z.number().min(0),
+        drops: z.coerce.number().min(0),
         assignments: z.array(
           z.object({
             id: z.string().min(1),
@@ -39,17 +39,17 @@ export const ClassFormSchema = z.object({
             score: z.coerce.number().min(0).max(100),
             outOf: z.number().min(0),
             simulated: z.boolean(),
-          })
+          }),
         ),
-      }) satisfies z.ZodType<bucket>
+      }) satisfies z.ZodType<bucket>,
     )
     .refine(
       (buckets) =>
         buckets.reduce((sum, x) => sum + Number(x.percentage), 0) === 100,
       {
-        message: 'The sum of all bucket weights must be 100%',
-        path: ['refine'],
-      }
+        message: "The sum of all bucket weights must be 100%",
+        path: ["refine"],
+      },
     ),
 });
 
@@ -71,17 +71,17 @@ export default function ClassForm(params: {
   const { form, submit, submitText } = params;
 
   const bucketsSum = form
-    .watch('buckets')
+    .watch("buckets")
     .reduce((sum, x) => sum + Number(x.percentage), 0);
 
   const { fields, append, remove } = useFieldArray({
-    name: 'buckets',
+    name: "buckets",
     control: form.control,
   });
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)}>
-        <div className="flex mt-6 flex-row gap-8">
+        <div className="mt-2 flex flex-row items-start gap-8">
           <div className="flex flex-col gap-2">
             <FormField
               control={form.control}
@@ -92,6 +92,7 @@ export default function ClassForm(params: {
                   <FormControl>
                     <Input
                       required
+                      type="text"
                       placeholder="Imperative Computation"
                       {...field}
                     />
@@ -106,14 +107,19 @@ export default function ClassForm(params: {
                 <FormItem>
                   <FormLabel>Class Number</FormLabel>
                   <FormControl>
-                    <Input required placeholder="15-122" {...field} />
+                    <Input
+                      required
+                      type="text"
+                      placeholder="15-122"
+                      {...field}
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
           </div>
           <div className="flex flex-col gap-2">
-            <FormLabel>Weights</FormLabel>
+            <FormLabel className="mt-2">Weights</FormLabel>
             {fields.map((field, index) => {
               return (
                 <div key={field.id}>
@@ -127,6 +133,7 @@ export default function ClassForm(params: {
                             <FormControl>
                               <Input
                                 required
+                                type="text"
                                 placeholder="Homework"
                                 {...field}
                               />
@@ -219,9 +226,9 @@ export default function ClassForm(params: {
           </div>
         </div>
         <Separator className="mx-2 my-4"></Separator>
-        <div className="text-center flex flex-col gap-2 items-center">
+        <div className="flex flex-col items-center gap-2 text-center">
           {bucketsSum != 100 && (
-            <p role="alert" className="text-destructive text-sm font-bold">
+            <p role="alert" className="text-sm font-bold text-destructive">
               The sum of all bucket weights must be 100%
             </p>
           )}
