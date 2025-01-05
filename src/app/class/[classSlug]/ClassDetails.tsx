@@ -191,8 +191,8 @@ export default function ClassDetails(params: { classId: string }) {
           ))}
         </div>
 
-        <div className="bg-background sticky bottom-0 flex flex-col items-center justify-center gap-2 pb-2">
-          <Separator className="from-background mt-2 bg-gradient-to-t" />
+        <div className="sticky bottom-0 flex flex-col items-center justify-center gap-2 bg-background pb-2">
+          <Separator className="mt-2 bg-gradient-to-t from-background" />
           <H3 className="mb-4 text-center">
             Total Grade: {totalGrade(weights).toFixed(2)}%
           </H3>
@@ -202,8 +202,8 @@ export default function ClassDetails(params: { classId: string }) {
               size="lg"
               variant={
                 selectingState == SelectingStates.SELECTING
-                  ? "default"
-                  : "outline"
+                  ? "outline"
+                  : "default"
               }
               onClick={() => {
                 if (selectingState == SelectingStates.SELECTING) {

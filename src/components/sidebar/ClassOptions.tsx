@@ -8,6 +8,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SelectingStates, useDataStore } from "@/data/store";
 import { useRouter } from "next/navigation";
@@ -21,6 +32,8 @@ import {
 } from "../ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { SidebarMenuAction } from "../ui/sidebar";
+import { useSession } from "next-auth/react";
+import { P } from "../ui/typography";
 
 export default function ClassOptions(params: { existingClassId: string }) {
   const { existingClassId } = params;
@@ -29,6 +42,8 @@ export default function ClassOptions(params: { existingClassId: string }) {
   )!;
   const [open, setOpen] = useState(false);
   const editClass = useDataStore((state) => state.editClass);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const form = useForm<ClassFormData>({
     resolver: zodResolver(ClassFormSchema),
@@ -67,6 +82,8 @@ export default function ClassOptions(params: { existingClassId: string }) {
 
   const deleteClass = useDataStore((state) => state.deleteClass);
 
+  const { status } = useSession();
+
   return (
     <div>
       <Dialog
@@ -91,7 +108,7 @@ export default function ClassOptions(params: { existingClassId: string }) {
                 <span>Edit Class</span>
               </DialogTrigger>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => deleteClass(existingClass.id)}>
+            <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
               <span>Delete Class</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -106,6 +123,34 @@ export default function ClassOptions(params: { existingClassId: string }) {
           <ClassForm form={form} submit={submit} submitText="Save Changes" />
         </DialogContent>
       </Dialog>
+      <AlertDialog open={deleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete {existingClass.name}?
+            </AlertDialogTitle>
+            <div className="text-sm text-muted-foreground">
+              <P>
+                This will delete the class and all its buckets and assignments
+              </P>
+              {status === "authenticated" && (
+                <P>
+                  Note: The class will not be deleted from the cloud until you
+                  manually sync
+                </P>
+              )}
+            </div>{" "}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => deleteClass(existingClass.id)}>
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
