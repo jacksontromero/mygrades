@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { BaseSyntheticEvent, useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { Button } from '../ui/button';
+import { BaseSyntheticEvent, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { defaultBucket, SelectingStates, useDataStore } from '@/data/store';
-import { useRouter } from 'next/navigation';
-import ClassForm, { ClassFormData, ClassFormSchema } from './ClassForm';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { useShallow } from 'zustand/react/shallow';
+} from "../ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { defaultBucket, SelectingStates, useDataStore } from "@/data/store";
+import { useRouter } from "next/navigation";
+import ClassForm, { ClassFormData, ClassFormSchema } from "./ClassForm";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useShallow } from "zustand/react/shallow";
 
 export default function AddClass() {
   const numClasses = useDataStore(
-    useShallow((state) => Object.keys(state.classes).length)
+    useShallow((state) => Object.keys(state.classes).length),
   );
 
   const [open, setOpen] = useState(false);
@@ -34,10 +34,10 @@ export default function AddClass() {
     resolver: async (data, context, options) => {
       return zodResolver(ClassFormSchema)(data, context, options);
     },
-    mode: 'onSubmit',
+    mode: "onSubmit",
     defaultValues: {
-      courseName: '',
-      courseNumber: '',
+      courseName: "",
+      courseNumber: "",
       buckets: [defaultBucket()],
     },
   });
@@ -46,7 +46,7 @@ export default function AddClass() {
 
   const submit: SubmitHandler<ClassFormData> = (
     formData: ClassFormData,
-    event: BaseSyntheticEvent<object, any, any> | undefined
+    event: BaseSyntheticEvent<object, any, any> | undefined,
   ) => {
     event?.preventDefault();
 
@@ -70,10 +70,11 @@ export default function AddClass() {
   };
 
   return (
-    <div className="flex  justify-center">
+    <div className="flex justify-center">
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
         <DialogTrigger asChild>
           <Button
+            variant="outline"
             onClick={() => {
               setOpen(true);
             }}
@@ -84,7 +85,7 @@ export default function AddClass() {
         </DialogTrigger>
         <DialogContent className="w-full max-w-[700px]">
           <DialogHeader>
-            <DialogTitle className="font-bold text-xl">
+            <DialogTitle className="text-xl font-bold">
               Add a New Class
             </DialogTitle>
           </DialogHeader>

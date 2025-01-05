@@ -45,8 +45,8 @@ export function calculateScores(b: bucket): { dropped: number; raw: number } {
 
   return {
     dropped:
-      totalDroppedPoints == 0 ? 1 : totalDroppedScore / totalDroppedPoints,
-    raw: totalPoints == 0 ? 1 : totalScore / totalPoints,
+      totalDroppedPoints == 0 ? 0 : totalDroppedScore / totalDroppedPoints,
+    raw: totalPoints == 0 ? 0 : totalScore / totalPoints,
   };
 }
 
@@ -155,6 +155,7 @@ export default function ClassDetails(params: { classId: string }) {
         onChange={(e) => setTargetGrade(classId, Number(e.target.value))}
         type="number"
         defaultValue={targetGrade}
+        placeholder="Target Grade %"
         min={0}
         onFocus={(e) => {
           e.target.select();
@@ -196,7 +197,7 @@ export default function ClassDetails(params: { classId: string }) {
           <H3 className="mb-4 text-center">
             Total Grade: {totalGrade(weights).toFixed(2)}%
           </H3>
-          <div className="flex flex-row items-center justify-center gap-1">
+          <div className="flex flex-row items-center justify-center gap-4">
             {targetGradeBox}
             <Button
               size="lg"
