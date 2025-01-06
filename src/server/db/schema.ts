@@ -1,4 +1,4 @@
-import { serverDataStore } from "@/data/store";
+import { bucket, serverDataStore } from "@/data/store";
 import { relations, sql } from "drizzle-orm";
 import {
   index,
@@ -53,6 +53,40 @@ export const savedStores = createTable("saved_store", {
 
   data: jsonb("data").$type<serverDataStore>().notNull(),
 });
+
+// NOTE - requires enabling pg_trgm and btree_gin extensions on the DB manually
+export const publishedClasses = createTable(
+  "published_class",
+  {
+    id: varchar("id", { length: 255 })
+      .notNull()
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    createdById: varchar("created_by", { length: 255 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+
+    name: varchar("name", { length: 255 }).notNull(),
+    number: varchar("number", { length: 255 }).notNull(),
+    weights: jsonb("weights").$type<bucket[]>().notNull(),
+
+    university: varchar("university", { length: 255 }).notNull(),
+    semester: varchar("semester", { length: 255 }),
+
+    numUsers: integer("num_users").notNull().default(0),
+    numInaccurateReports: integer("num_inaccurate_reports")
+      .notNull()
+      .default(0),
+  },
+  (example) => ({
+    courseNameSearchIdx: index("name_search_idx").using("gin", example.name),
+    courseNumberSearchIdx: index("number__search_idx").using(
+      "gin",
+      example.number,
+    ),
+  }),
+);
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })

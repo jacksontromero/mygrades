@@ -1,8 +1,8 @@
 import { serverDataStore } from "@/data/store";
 import { auth } from "./auth";
 import { db } from "./db";
-import { savedStores } from "./db/schema";
-import { eq } from "drizzle-orm";
+import { publishedClasses, savedStores } from "./db/schema";
+import { and, desc, eq, getTableColumns, gt, sql } from "drizzle-orm";
 
 export async function getUserStore(): Promise<serverDataStore | null> {
   const session = await auth();
@@ -49,4 +49,56 @@ export async function updateUserStore(data: serverDataStore) {
   }
 
   return;
+}
+
+export async function searchPublishedClassesByName(
+  name: string,
+  university: string | null = null,
+  paginationIdx = 0,
+) {
+  const paginationSize = 10;
+
+  const res = await db
+    .select({
+      ...getTableColumns(publishedClasses),
+      similarity: sql<number>`similarity(${name}, ${publishedClasses.name})`,
+    })
+    .from(publishedClasses)
+    .where((x) =>
+      and(
+        gt(x.similarity, 0.2),
+        university ? eq(x.university, university) : undefined,
+      ),
+    )
+    .orderBy((x) => desc(x.similarity))
+    .limit(paginationSize)
+    .offset(paginationIdx * paginationSize);
+
+  return res;
+}
+
+export async function searchPublishedClassesByNumber(
+  number: string,
+  university: string | null = null,
+  paginationIdx = 0,
+) {
+  const paginationSize = 10;
+
+  const res = await db
+    .select({
+      ...getTableColumns(publishedClasses),
+      similarity: sql<number>`similarity(${number}, ${publishedClasses.number})`,
+    })
+    .from(publishedClasses)
+    .where((x) =>
+      and(
+        gt(x.similarity, 0.2),
+        university ? eq(x.university, university) : undefined,
+      ),
+    )
+    .orderBy((x) => desc(x.similarity))
+    .limit(paginationSize)
+    .offset(paginationIdx * paginationSize);
+
+  return res;
 }

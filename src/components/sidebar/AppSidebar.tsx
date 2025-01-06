@@ -1,5 +1,4 @@
-"use client";
-import { useDataStore } from "@/data/store";
+"use server";
 import {
   Sidebar,
   SidebarContent,
@@ -9,33 +8,20 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSkeleton,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-import AddClass from "./AddClass";
-import { useRouter } from "next/navigation";
-import { useShallow } from "zustand/react/shallow";
-import ClassOptions from "./ClassOptions";
+import AddClass from "./add_class/AddClass";
 import { H1, P } from "../ui/typography";
 import Link from "next/link";
 import { Separator } from "@radix-ui/react-separator";
 import { NavUser } from "./NavUser";
 import SignIn from "../auth/SignIn";
-import { useSession } from "next-auth/react";
+import SidebarClasses from "./SidebarClasses";
+import { auth } from "@/server/auth";
 
-export function AppSidebar() {
-  const classIds = useDataStore(
-    useShallow((state) => Object.keys(state.classes)),
-  );
-
-  const classes = useDataStore.getState().classes;
-  const isHydrated = useDataStore((state) => state._hasHydrated);
-
-  const router = useRouter();
-
-  const { data: session, status } = useSession();
+export async function AppSidebar() {
+  const session = await auth();
 
   return (
     <Sidebar>
@@ -47,7 +33,7 @@ export function AppSidebar() {
           <P className="text-xs">Created by Jackson Romero</P>
           <Separator orientation="vertical" className="mx-2 h-full border" />
           <Link
-            href={"https://github.com/jacksontromero/finals-calculator"}
+            href={"https://github.com/jacksontromero/mygrades"}
             target="_blank"
           >
             <svg
@@ -70,25 +56,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Classes</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {isHydrated
-                ? classIds.length != 0 &&
-                  Object.entries(classes).map(([_id, x]) => (
-                    <SidebarMenuItem key={x.id}>
-                      <SidebarMenuButton
-                        onClick={() => router.push(`/class/${x.id}`)}
-                      >
-                        <div>
-                          {x.name} ({x.number})
-                        </div>
-                      </SidebarMenuButton>
-                      <ClassOptions existingClassId={x.id} />
-                    </SidebarMenuItem>
-                  ))
-                : Array.from({ length: 5 }).map((_, index) => (
-                    <SidebarMenuItem key={index}>
-                      <SidebarMenuSkeleton />
-                    </SidebarMenuItem>
-                  ))}
+              <SidebarClasses />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -96,28 +64,26 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <AddClass />
-                </SidebarMenuButton>
+                <AddClass />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        {status === "authenticated" ? (
-          <NavUser
-            user={{
-              name: session?.user?.name!,
-              email: session?.user?.email!,
-              avatar: session?.user?.image!,
-            }}
-          />
-        ) : status === "unauthenticated" ? (
-          <SignIn />
-        ) : (
-          <></>
-        )}
+        <SidebarMenu>
+          {session ? (
+            <NavUser
+              user={{
+                name: session.user.name!,
+                email: session.user.email!,
+                avatar: session.user.image!,
+              }}
+            />
+          ) : (
+            <SignIn />
+          )}
+        </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
   );

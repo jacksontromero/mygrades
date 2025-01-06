@@ -2,22 +2,23 @@
 
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { defaultBucket, SelectingStates, useDataStore } from "@/data/store";
 import { useRouter } from "next/navigation";
-import ClassForm, { ClassFormData, ClassFormSchema } from "./ClassForm";
+import ClassForm, { ClassFormData, ClassFormSchema } from "../ClassForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 
-export default function AddClass() {
+export default function AddClassClient() {
   const numClasses = useDataStore(
     useShallow((state) => Object.keys(state.classes).length),
   );
@@ -71,27 +72,29 @@ export default function AddClass() {
 
   return (
     <div className="flex justify-center">
-      <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setOpen(true);
-            }}
-            className="my-2"
-          >
-            Add New Class
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="w-full max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              Add a New Class
-            </DialogTitle>
-          </DialogHeader>
-          <ClassForm form={form} submit={submit} submitText="Add Class" />
-        </DialogContent>
-      </Dialog>
+      <SidebarMenuButton asChild>
+        <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setOpen(true);
+              }}
+              className="my-2"
+            >
+              Add New Class
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="w-full max-w-[700px]">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">
+                Add a New Class
+              </DialogTitle>
+            </DialogHeader>
+            <ClassForm form={form} submit={submit} submitText="Add Class" />
+          </DialogContent>
+        </Dialog>
+      </SidebarMenuButton>
     </div>
   );
 }
