@@ -87,8 +87,6 @@ export default function ClassForm(params: {
     control: form.control,
   });
 
-  const { status } = useSession();
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)}>

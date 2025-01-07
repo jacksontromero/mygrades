@@ -176,10 +176,12 @@ export default function ClassOptions(params: {
             </DialogTrigger>
             <DialogTrigger
               className="w-full"
-              disabled={existingClass.published}
+              disabled={existingClass.published || status !== "authenticated"}
               onClick={() => setWhichDialogToShow(WhichDialog.PUBLISH)}
             >
-              <DropdownMenuItem disabled={existingClass.published}>
+              <DropdownMenuItem
+                disabled={existingClass.published || status !== "authenticated"}
+              >
                 <span>Publish Class</span>
               </DropdownMenuItem>
             </DialogTrigger>
