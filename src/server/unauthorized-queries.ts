@@ -3,13 +3,14 @@ import { allUniversitiesView, publishedClasses } from "@/server/db/schema";
 import { and, desc, eq, getTableColumns, gt, sql } from "drizzle-orm";
 import { db } from "./db";
 
+// setting this high for now and not doing actual pagination
+const paginationSize = 25;
+
 export async function searchPublishedClassesByName(
   name: string,
   university: string | null = null,
   paginationIdx = 0,
 ) {
-  const paginationSize = 10;
-
   const res = await db
     .select({
       ...getTableColumns(publishedClasses),
@@ -34,8 +35,6 @@ export async function searchPublishedClassesByNumber(
   university: string | null = null,
   paginationIdx = 0,
 ) {
-  const paginationSize = 10;
-
   const res = await db
     .select({
       ...getTableColumns(publishedClasses),
@@ -56,8 +55,6 @@ export async function searchPublishedClassesByNumber(
 }
 
 export async function getAllUniversities() {
-  await db.refreshMaterializedView(allUniversitiesView);
-
   const res = await db.select().from(allUniversitiesView);
 
   return res.map((x) => x.university);

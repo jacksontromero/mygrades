@@ -13,7 +13,11 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { defaultBucket, SelectingStates, useDataStore } from "@/data/store";
 import { useRouter } from "next/navigation";
-import ClassForm, { ClassFormData, ClassFormSchema } from "../ClassForm";
+import ClassForm, {
+  ClassFormData,
+  ClassFormSchema,
+  ClassFormType,
+} from "../ClassForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
@@ -68,6 +72,7 @@ export default function AddClassClient({
       selectedBucket: null,
       selectedAssignment: null,
       targetGrade: 90,
+      published: false,
     });
 
     form.reset();
@@ -109,7 +114,7 @@ export default function AddClassClient({
                   <ClassForm
                     form={form}
                     submit={submit}
-                    submitText="Add Class"
+                    formType={ClassFormType.CREATE}
                   />
                 </TabsContent>
                 <TabsContent value="searchClass" className="min-h-[372px]">

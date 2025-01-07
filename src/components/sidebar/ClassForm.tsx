@@ -18,9 +18,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { Trash2Icon } from "lucide-react";
+import { CloudUpload, Trash2Icon } from "lucide-react";
 import { z } from "zod";
 import { bucket, defaultBucket } from "@/data/store";
+import { useSession } from "next-auth/react";
+import { Switch } from "../ui/switch";
+import SearchUniversities from "./add_class/SearchUniversities";
+import { P } from "../ui/typography";
 
 export const ClassFormSchema = z.object({
   courseName: z.string().min(1).max(255),
@@ -51,24 +55,28 @@ export const ClassFormSchema = z.object({
         path: ["refine"],
       },
     ),
+  publishInfo: z
+    .object({
+      includeAssignments: z.boolean().default(false),
+      university: z.string().max(255),
+    })
+    .optional(),
 });
 
 export type ClassFormData = z.infer<typeof ClassFormSchema>;
 
+export enum ClassFormType {
+  CREATE,
+  EDIT,
+  PUBLISH,
+}
+
 export default function ClassForm(params: {
-  form: UseFormReturn<
-    {
-      courseName: string;
-      courseNumber: string;
-      buckets: bucket[];
-    },
-    any,
-    undefined
-  >;
+  form: UseFormReturn<ClassFormData, any, undefined>;
   submit: SubmitHandler<ClassFormData>;
-  submitText: string;
+  formType: ClassFormType;
 }) {
-  const { form, submit, submitText } = params;
+  const { form, submit, formType } = params;
 
   const bucketsSum = form
     .watch("buckets")
@@ -78,6 +86,9 @@ export default function ClassForm(params: {
     name: "buckets",
     control: form.control,
   });
+
+  const { status } = useSession();
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)}>
@@ -232,13 +243,98 @@ export default function ClassForm(params: {
               The sum of all bucket weights must be 100%
             </p>
           )}
-          <Button
-            className="max-w-md"
-            type="submit"
-            disabled={bucketsSum != 100}
-          >
-            {submitText}
-          </Button>
+          {(() => {
+            switch (formType) {
+              case ClassFormType.CREATE:
+                return (
+                  <Button
+                    className="max-w-md"
+                    type="submit"
+                    disabled={bucketsSum != 100}
+                  >
+                    Add Class
+                  </Button>
+                );
+              case ClassFormType.EDIT:
+                return (
+                  <Button
+                    className="max-w-md"
+                    type="submit"
+                    disabled={bucketsSum != 100}
+                  >
+                    Save Changes
+                  </Button>
+                );
+              case ClassFormType.PUBLISH:
+                return (
+                  <div>
+                    <div className="flex min-h-full flex-row items-center gap-2">
+                      <div>
+                        <FormField
+                          control={form.control}
+                          name="publishInfo.includeAssignments"
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex flex-row items-center gap-1">
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger>
+                                      <FormLabel className="cursor-pointer">
+                                        Include Assignments
+                                      </FormLabel>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                      <P>
+                                        Include each assignment's name and
+                                        score-out-of in the published class.
+                                      </P>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                                <FormControl>
+                                  <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                  />
+                                </FormControl>
+                              </div>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <Separator orientation="vertical" className="h-[36px]" />
+                      <FormField
+                        control={form.control}
+                        name="publishInfo.university"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <SearchUniversities
+                                selectedUni={field.value}
+                                setSelectedUni={field.onChange}
+                                buttonText="Select University"
+                                showAddButton={true}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <Button
+                      className="mt-4 max-w-md"
+                      type="submit"
+                      disabled={
+                        bucketsSum != 100 ||
+                        !form.watch("publishInfo.university")
+                      }
+                    >
+                      <CloudUpload />
+                      <span>Publish Class</span>
+                    </Button>
+                  </div>
+                );
+            }
+          })()}
         </div>
       </form>
     </Form>

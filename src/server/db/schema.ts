@@ -73,7 +73,6 @@ export const publishedClasses = createTable(
     weights: jsonb("weights").$type<bucket[]>().notNull(),
 
     university: varchar("university", { length: 255 }).notNull(),
-    semester: varchar("semester", { length: 255 }),
 
     numUsers: integer("num_users").notNull().default(0),
     numInaccurateReports: integer("num_inaccurate_reports")

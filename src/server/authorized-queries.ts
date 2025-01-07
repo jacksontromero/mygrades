@@ -1,7 +1,8 @@
-import { serverDataStore } from "@/data/store";
+import { bucket, serverDataStore } from "@/data/store";
 import { auth } from "./auth";
 import { db } from "./db";
 import {
+  allUniversitiesView,
   publishedClasses,
   savedStores,
   usersToInaccurateReports,
@@ -116,6 +117,34 @@ export async function reportInaccurateSchema(classId: string) {
     userId: session.user.id,
     classId: classId,
   });
+
+  return;
+}
+
+export type publishClassInput = {
+  name: string;
+  number: string;
+  weights: bucket[];
+  university: string;
+};
+
+export async function publishClass(classInfo: publishClassInput) {
+  const session = await auth();
+
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  await db.insert(publishedClasses).values({
+    name: classInfo.name,
+    number: classInfo.number,
+    weights: classInfo.weights,
+    university: classInfo.university,
+    createdById: session.user.id,
+    numUsers: 1,
+  });
+
+  await db.refreshMaterializedView(allUniversitiesView);
 
   return;
 }

@@ -47,7 +47,6 @@ async function SearchClasses() {
     return await reportInaccurateSchema(classId);
   }
 
-  const allUniversities = await getAllUniversities();
   const reportedInaccurateClasses = await getUserReportedInaccurateClasses();
 
   return (
@@ -57,7 +56,6 @@ async function SearchClasses() {
       increaseNumUsers={boundIncreaseNumUsers}
       reportInaccurate={boundReportInaccurate}
       reportedInaccurateClasses={reportedInaccurateClasses}
-      allUniversities={allUniversities}
     />
   );
 }

@@ -34,6 +34,7 @@ export type schoolClass = {
   selectedBucket: bucket | null;
   selectedAssignment: assignment | null;
   targetGrade: number;
+  published: boolean;
 };
 
 export type serverDataStore = {

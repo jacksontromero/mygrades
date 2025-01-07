@@ -14,14 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  AlertTriangle,
-  ChevronsUpDown,
-  HelpCircle,
-  Plus,
-  Users,
-  X,
-} from "lucide-react";
+import { AlertTriangle, HelpCircle, Plus, Users } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -43,22 +36,8 @@ import { P } from "@/components/ui/typography";
 import { SelectingStates, useDataStore } from "@/data/store";
 import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
-import { useIsMobile } from "@/hooks/use-mobile";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { useSession } from "next-auth/react";
+import SearchUniversities from "./SearchUniversities";
 
 type SearchType = "name" | "number";
 
@@ -68,7 +47,6 @@ export function SearchClassesClient({
   increaseNumUsers,
   reportInaccurate,
   reportedInaccurateClasses,
-  allUniversities,
 }: {
   searchName: (
     name: string,
@@ -81,7 +59,6 @@ export function SearchClassesClient({
   increaseNumUsers: (classId: string) => Promise<void>;
   reportInaccurate: (classId: string) => Promise<void>;
   reportedInaccurateClasses: Set<string>;
-  allUniversities: string[];
 }) {
   const [searchType, setSearchType] = useState<SearchType>("name");
   const [searchQuery, setSearchQuery] = useState("");
@@ -128,6 +105,7 @@ export function SearchClassesClient({
       selectedBucket: null,
       selectedAssignment: null,
       targetGrade: 90,
+      published: true,
     });
 
     router.push(`/class/${newID}`);
@@ -135,7 +113,7 @@ export function SearchClassesClient({
 
   return (
     <div className="flex w-full max-w-3xl">
-      <div className="w-1/3 space-y-4 p-4">
+      <div className="flex w-1/3 flex-col space-y-4 p-4">
         <RadioGroup
           defaultValue="name"
           onValueChange={(value) => setSearchType(value as SearchType)}
@@ -150,9 +128,10 @@ export function SearchClassesClient({
           </div>
         </RadioGroup>
         <SearchUniversities
-          allUniversities={allUniversities}
           selectedUni={selectedUni}
           setSelectedUni={setSelectedUni}
+          buttonText="Filter By University"
+          showAddButton={false}
         />
         <Input
           type="text"
@@ -166,9 +145,15 @@ export function SearchClassesClient({
         >
           {isLoading ? "Searching..." : "Search"}
         </Button>
+        <div className="flex h-full grow flex-col justify-end text-sm text-muted-foreground">
+          <p className="h-auto">
+            To publish your own class, create it locally, click "..." in the
+            sidebar, and then click "Publish Class"
+          </p>
+        </div>
       </div>
       <Separator orientation="vertical" />
-      <div className="w-2/3 p-2">
+      <div className="ml-2 w-2/3 p-2">
         <h3 className="mb-2 text-lg font-semibold">Search Results</h3>
         <ScrollArea className="h-[320px]">
           {searchResults.length > 0 ? (
@@ -180,7 +165,6 @@ export function SearchClassesClient({
                       <p className="font-medium">{course.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {course.number}, {course.university}
-                        {course.semester ? `, ${course.semester}` : ""}
                       </p>
                     </div>
                     <div className="flex flex-row items-center justify-between gap-2">
@@ -285,27 +269,7 @@ export function SearchClassesClient({
                         {!reportedInaccurateClasses.has(selectedCourse?.id!) ? (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                onClick={() => {
-                                  reportInaccurate(selectedCourse?.id!);
-                                  setSearchResults((prev) => {
-                                    return prev.map((x) => {
-                                      if (x.id === selectedCourse?.id) {
-                                        return {
-                                          ...x,
-                                          numInaccurateReports:
-                                            x.numInaccurateReports + 1,
-                                        };
-                                      } else {
-                                        return x;
-                                      }
-                                    });
-                                  });
-                                  // refresh causes button to change to "You have already reported this class"
-                                  router.refresh();
-                                }}
-                              >
+                              <Button variant="outline">
                                 <div className="flex flex-row items-center gap-2">
                                   <AlertTriangle className="text-destructive" />
                                   <span className="text-destructive">
@@ -328,7 +292,27 @@ export function SearchClassesClient({
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction className="bg-destructive">
+                                <AlertDialogAction
+                                  className="bg-primary hover:bg-destructive"
+                                  onClick={() => {
+                                    reportInaccurate(selectedCourse?.id!);
+                                    setSearchResults((prev) => {
+                                      return prev.map((x) => {
+                                        if (x.id === selectedCourse?.id) {
+                                          return {
+                                            ...x,
+                                            numInaccurateReports:
+                                              x.numInaccurateReports + 1,
+                                          };
+                                        } else {
+                                          return x;
+                                        }
+                                      });
+                                    });
+                                    // refresh causes button to change to "You have already reported this class"
+                                    router.refresh();
+                                  }}
+                                >
                                   Report
                                 </AlertDialogAction>
                               </AlertDialogFooter>
@@ -365,119 +349,5 @@ export function SearchClassesClient({
         </ScrollArea>
       </div>
     </div>
-  );
-}
-
-function SearchUniversities({
-  allUniversities,
-  selectedUni,
-  setSelectedUni,
-}: {
-  allUniversities: string[];
-  selectedUni: string | null;
-  setSelectedUni: (uni: string | null) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const isMobile = useIsMobile();
-
-  if (!isMobile) {
-    return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="justify-start">
-            <div className="flex flex-row items-center justify-start gap-2">
-              {selectedUni ? (
-                <span>{selectedUni}</span>
-              ) : (
-                <>Filter By University...</>
-              )}
-              <ChevronsUpDown className="opacity-50" />
-            </div>
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start">
-          <UniList
-            allUniversities={allUniversities}
-            setOpen={setOpen}
-            selectedUni={selectedUni}
-            setSelectedUni={setSelectedUni}
-          />
-        </PopoverContent>
-      </Popover>
-    );
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline" className="w-[150px] justify-start">
-          {selectedUni ? (
-            <>{selectedUni}</>
-          ) : (
-            <>
-              Filter By University... <ChevronsUpDown className="opacity-50" />
-            </>
-          )}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="mt-4 border-t">
-          <UniList
-            allUniversities={allUniversities}
-            setOpen={setOpen}
-            selectedUni={selectedUni}
-            setSelectedUni={setSelectedUni}
-          />
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
-}
-
-function UniList({
-  allUniversities,
-  setOpen,
-  selectedUni,
-  setSelectedUni,
-}: {
-  allUniversities: string[];
-  setOpen: (open: boolean) => void;
-  selectedUni: string | null;
-  setSelectedUni: (uni: string | null) => void;
-}) {
-  return (
-    <Command>
-      <CommandInput placeholder="Filter Universities..." />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup>
-          {selectedUni && (
-            <CommandItem
-              key="select none at all"
-              value="Deselect"
-              onSelect={() => {
-                setSelectedUni(null);
-                setOpen(false);
-              }}
-            >
-              <X className="h-4 w-4" />
-              Deselect
-            </CommandItem>
-          )}
-          {allUniversities.map((uni) => (
-            <CommandItem
-              key={uni}
-              value={uni}
-              onSelect={(value) => {
-                setSelectedUni(uni);
-                setOpen(false);
-              }}
-            >
-              {uni}
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      </CommandList>
-    </Command>
   );
 }
