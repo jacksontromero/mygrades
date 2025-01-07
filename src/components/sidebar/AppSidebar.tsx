@@ -55,7 +55,7 @@ export async function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Classes</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="gap-2">
               <SidebarClasses />
             </SidebarMenu>
           </SidebarGroupContent>

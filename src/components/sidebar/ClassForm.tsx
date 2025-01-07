@@ -23,8 +23,8 @@ import { z } from "zod";
 import { bucket, defaultBucket } from "@/data/store";
 
 export const ClassFormSchema = z.object({
-  courseName: z.string().min(1),
-  courseNumber: z.string().min(1),
+  courseName: z.string().min(1).max(255),
+  courseNumber: z.string().min(1).max(255),
   buckets: z
     .array(
       z.object({

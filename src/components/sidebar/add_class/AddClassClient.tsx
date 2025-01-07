@@ -17,8 +17,14 @@ import ClassForm, { ClassFormData, ClassFormSchema } from "../ClassForm";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function AddClassClient() {
+// pass searchClassesContent as a prop so it can be server-side rendered
+export default function AddClassClient({
+  searchClassesContent,
+}: {
+  searchClassesContent: React.ReactNode;
+}) {
   const numClasses = useDataStore(
     useShallow((state) => Object.keys(state.classes).length),
   );
@@ -85,13 +91,32 @@ export default function AddClassClient() {
               Add New Class
             </Button>
           </DialogTrigger>
-          <DialogContent className="w-full max-w-[700px]">
+          <DialogContent className="w-full max-w-[800px]">
             <DialogHeader>
               <DialogTitle className="text-xl font-bold">
                 Add a New Class
               </DialogTitle>
             </DialogHeader>
-            <ClassForm form={form} submit={submit} submitText="Add Class" />
+            <div>
+              <Tabs defaultValue="createClass">
+                <TabsList>
+                  <TabsTrigger value="createClass">Create a Class</TabsTrigger>
+                  <TabsTrigger value="searchClass">
+                    Search for a Class
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="createClass" className="min-h-[372px]">
+                  <ClassForm
+                    form={form}
+                    submit={submit}
+                    submitText="Add Class"
+                  />
+                </TabsContent>
+                <TabsContent value="searchClass" className="min-h-[372px]">
+                  {searchClassesContent}
+                </TabsContent>
+              </Tabs>
+            </div>
           </DialogContent>
         </Dialog>
       </SidebarMenuButton>

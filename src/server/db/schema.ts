@@ -4,6 +4,7 @@ import {
   index,
   integer,
   jsonb,
+  pgMaterializedView,
   pgTableCreator,
   primaryKey,
   text,
@@ -88,6 +89,50 @@ export const publishedClasses = createTable(
   }),
 );
 
+export const publishedClassesRelations = relations(
+  publishedClasses,
+  ({ many }) => ({
+    usersToInaccurateReports: many(usersToInaccurateReports),
+  }),
+);
+
+export const allUniversitiesView = pgMaterializedView("mygrades_all_unis").as(
+  (qb) =>
+    qb
+      .selectDistinct({ university: publishedClasses.university })
+      .from(publishedClasses),
+);
+
+export const usersToInaccurateReports = createTable(
+  "users_to_inacc_reports",
+  {
+    userId: varchar("user_id", { length: 255 })
+      .notNull()
+      .references(() => users.id),
+
+    classId: varchar("class_id", { length: 255 })
+      .notNull()
+      .references(() => publishedClasses.id),
+  },
+  (example) => ({
+    pk: primaryKey({ columns: [example.userId, example.classId] }),
+  }),
+);
+
+export const usersToInaccurateReportsRelations = relations(
+  usersToInaccurateReports,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [usersToInaccurateReports.userId],
+      references: [users.id],
+    }),
+    class: one(publishedClasses, {
+      fields: [usersToInaccurateReports.classId],
+      references: [publishedClasses.id],
+    }),
+  }),
+);
+
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
     .notNull()
@@ -104,6 +149,7 @@ export const users = createTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  usersToInaccurateReports: many(usersToInaccurateReports),
 }));
 
 export const accounts = createTable(
