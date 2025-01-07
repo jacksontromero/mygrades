@@ -93,7 +93,7 @@ export default function ClassOptions(params: {
     router.push(`/class/${existingClass.id}`);
   };
 
-  const submitPublish = (
+  const submitPublish = async (
     formData: ClassFormData,
     event: BaseSyntheticEvent<object, any, any> | undefined,
   ) => {
@@ -128,7 +128,7 @@ export default function ClassOptions(params: {
       }));
     }
 
-    publishClass(dataToSend);
+    await publishClass(dataToSend);
 
     editClass(existingClass.id, {
       ...existingClass,

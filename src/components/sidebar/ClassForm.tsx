@@ -21,7 +21,6 @@ import {
 import { CloudUpload, Trash2Icon } from "lucide-react";
 import { z } from "zod";
 import { bucket, defaultBucket } from "@/data/store";
-import { useSession } from "next-auth/react";
 import { Switch } from "../ui/switch";
 import SearchUniversities from "./add_class/SearchUniversities";
 import { P } from "../ui/typography";
@@ -283,8 +282,8 @@ export default function ClassForm(params: {
                                     </TooltipTrigger>
                                     <TooltipContent>
                                       <P>
-                                        Include each assignment's name and
-                                        score-out-of in the published class.
+                                        {`Include each assignment's name and
+                                        score-out-of in the published class.`}
                                       </P>
                                     </TooltipContent>
                                   </Tooltip>

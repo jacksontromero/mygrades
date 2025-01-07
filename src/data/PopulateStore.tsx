@@ -44,7 +44,7 @@ export default function PopulateStore(params: {
         }
       }
     }
-  }, [serverStore, existingStore]);
+  }, [serverStore, existingStore, runOnce]);
 
   if (mismatchedClasses.length > 0) {
     return (
@@ -55,9 +55,9 @@ export default function PopulateStore(params: {
             <div className="text-sm text-muted-foreground">
               {/* <AlertDialogDescription> */}
               <P>
-                Your browser's local classes are out of sync with what you've
+                {`Your browser's local classes are out of sync with what you've
                 synced to the cloud previously. Would you like to with your
-                current local classes or overwrite them with the cloud data?
+                current local classes or overwrite them with the cloud data?`}
               </P>
               <P>
                 The out of sync classes are:{" "}

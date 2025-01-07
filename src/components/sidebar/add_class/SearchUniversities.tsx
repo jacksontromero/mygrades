@@ -182,7 +182,7 @@ function UniList({
             <CommandItem
               key={uni}
               value={uni}
-              onSelect={(value) => {
+              onSelect={() => {
                 setSelectedUni(uni);
                 setOpen(false);
               }}

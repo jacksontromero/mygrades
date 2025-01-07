@@ -27,7 +27,7 @@ export default function SaveChanges(params: {
     } else {
       setMutated(false);
     }
-  }, [wholeStore]);
+  }, [wholeStore, params.serverStore?.classes]);
 
   // popup on trying to close page if unsaved changes
   const listener = (e: BeforeUnloadEvent) => {
@@ -55,9 +55,15 @@ export default function SaveChanges(params: {
           setMutated(false);
           setSyncing(true);
 
-          res.then(() => {
-            setSyncing(false);
-          });
+          res.then(
+            () => {
+              setSyncing(false);
+            },
+            () => {
+              setSyncing(false);
+              throw new Error("Error saving changes");
+            },
+          );
         }}
       >
         <div className="flex flex-row items-center gap-1">

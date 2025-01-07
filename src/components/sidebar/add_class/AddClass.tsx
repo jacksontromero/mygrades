@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  getAllUniversities,
   increaseNumUsers,
   searchPublishedClassesByName,
   searchPublishedClassesByNumber,

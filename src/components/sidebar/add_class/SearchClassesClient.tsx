@@ -147,8 +147,8 @@ export function SearchClassesClient({
         </Button>
         <div className="flex h-full grow flex-col justify-end text-sm text-muted-foreground">
           <p className="h-auto">
-            To publish your own class, create it locally, click "..." in the
-            sidebar, and then click "Publish Class"
+            {`To publish your own class, create it locally, click "..." in the
+            sidebar, and then click "Publish Class"`}
           </p>
         </div>
       </div>
@@ -223,8 +223,8 @@ export function SearchClassesClient({
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => {
-                                increaseNumUsers(course.id);
+                              onClick={async () => {
+                                void increaseNumUsers(course.id);
                                 handleAddClass(course);
                               }}
                             >
@@ -294,8 +294,8 @@ export function SearchClassesClient({
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
                                   className="bg-primary hover:bg-destructive"
-                                  onClick={() => {
-                                    reportInaccurate(selectedCourse?.id!);
+                                  onClick={async () => {
+                                    await reportInaccurate(selectedCourse?.id!);
                                     setSearchResults((prev) => {
                                       return prev.map((x) => {
                                         if (x.id === selectedCourse?.id) {
