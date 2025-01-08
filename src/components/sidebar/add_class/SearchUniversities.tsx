@@ -49,7 +49,9 @@ export default function SearchUniversities({
         <PopoverTrigger asChild>
           <Button variant="outline" className="justify-start">
             <div className="flex w-full flex-row items-center justify-between gap-2">
-              {selectedUni ? <span>{selectedUni}</span> : <>{buttonText}</>}
+              <div className="overflow-hidden">
+                {selectedUni ? <span>{selectedUni}</span> : <>{buttonText}</>}
+              </div>
               <ChevronsUpDown className="opacity-50" />
             </div>
           </Button>
@@ -71,8 +73,10 @@ export default function SearchUniversities({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" className="justify-start">
-          <div className="flex w-full flex-row items-center justify-between gap-2 overflow-hidden">
-            {selectedUni ? <span>{selectedUni}</span> : <>{buttonText}</>}
+          <div className="flex w-full flex-row items-center justify-between gap-2">
+            <div className="overflow-hidden">
+              {selectedUni ? <span>{selectedUni}</span> : <>{buttonText}</>}
+            </div>
             <ChevronsUpDown className="opacity-50" />
           </div>
         </Button>
