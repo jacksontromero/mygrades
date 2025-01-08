@@ -41,6 +41,7 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@types/lodash": "^4.17.14",
     "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",

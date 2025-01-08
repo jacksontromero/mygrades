@@ -9,6 +9,7 @@ import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
 import StoreManager from "@/data/StoreManager";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Final Grade Calculator",
@@ -44,6 +45,7 @@ export default async function RootLayout({
                 <Topbar />
                 {children}
                 <Analytics />
+                <SpeedInsights />
               </main>
             </SessionProvider>
           </SidebarProvider>
