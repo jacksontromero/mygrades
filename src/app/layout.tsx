@@ -12,7 +12,7 @@ import StoreManager from "@/data/StoreManager";
 export const metadata: Metadata = {
   title: "Final Grade Calculator",
   description:
-    "Calculator for what grade you need on an assignment to get a specific grade in a class.  Supports multiple classes, grading schemes that make use of buckets/weights for different types of assignments, dropping/drops for the lowest assignments per bucket, and simulating average performance on assignments.",
+    "Calculator for what grade you need on an assignment to get a specific grade in a class.  Supports multiple classes, grading schemes that make use of buckets/weights for different types of assignments, dropping/drops for the lowest assignments per bucket, and simulating average performance on assignments. ",
 };
 
 export default async function RootLayout({
@@ -25,6 +25,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>
+      {/* <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head> */}
       <body>
         <ThemeProvider
           attribute="class"
