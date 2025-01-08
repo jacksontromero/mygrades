@@ -137,6 +137,7 @@ export default function ClassOptions(params: {
 
     form.reset();
     setOpen(false);
+    router.refresh();
   };
 
   const deleteClass = useDataStore((state) => state.deleteClass);
