@@ -8,6 +8,7 @@ import Topbar from "@/components/topbar/Topbar";
 import { SessionProvider } from "next-auth/react";
 import { cookies } from "next/headers";
 import StoreManager from "@/data/StoreManager";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Final Grade Calculator",
@@ -42,6 +43,7 @@ export default async function RootLayout({
               <main className="w-full">
                 <Topbar />
                 {children}
+                <Analytics />
               </main>
             </SessionProvider>
           </SidebarProvider>
