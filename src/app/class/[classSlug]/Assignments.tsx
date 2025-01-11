@@ -13,6 +13,7 @@ import { P } from "../../../components/ui/typography";
 import { Checkbox } from "../../../components/ui/checkbox";
 import { Button } from "../../../components/ui/button";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 export default function Assignments(params: {
   classId: string;
@@ -43,7 +44,7 @@ export default function Assignments(params: {
       {bucket.assignments.map((x, i) => (
         <div
           key={x.id}
-          className={`bg-background rounded-md px-1 py-1 ${
+          className={`rounded-md bg-background px-1 py-1 ${
             selectingState == SelectingStates.FIRST_LOAD ||
             (selectingState == SelectingStates.SELECTED &&
             selectedAssignment!.id === x.id
@@ -57,7 +58,7 @@ export default function Assignments(params: {
                 <div className="grid w-[35%] items-center gap-1.5">
                   {i == 0 && (
                     <Label
-                      className="text-muted-foreground overflow-hidden text-clip"
+                      className="overflow-hidden text-clip text-muted-foreground"
                       htmlFor="assignment-name-0"
                     >
                       Assignment Name
@@ -88,7 +89,11 @@ export default function Assignments(params: {
                   )}
                   <Input
                     id={`assignment-score-${i}`}
-                    className="w-full"
+                    className={cn(
+                      "w-full",
+                      x.score > x.outOf &&
+                        "bg-destructive/10 hover:bg-destructive/20",
+                    )}
                     disabled={x.simulated}
                     onChange={(e) =>
                       setAssignmentScore(
@@ -196,7 +201,7 @@ export default function Assignments(params: {
             <TooltipTrigger
               onClick={() => addNewAssignment(classId, bucket.id)}
             >
-              <PlusIcon className="text-primary mt-2" />
+              <PlusIcon className="mt-2 text-primary" />
             </TooltipTrigger>
             <TooltipContent>
               <P>Add Assignment</P>
