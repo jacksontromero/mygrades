@@ -1,3 +1,32 @@
+# TODO
+## Feature Planning
+1. Fix out of sync bug, edit class bugs
+2. Small visual tweaks, force bucket width, "Add a New Class" dialog is weirdly tall
+3. Walk through! Probably gonna use shepard [shepard](https://github.com/shipshapecode/shepherd)
+4. Improve search
+    - Default name+number search
+    - Pagination
+    - Rank by # users and # inaccurate
+    - Include created at date
+    - Constrain "University/School" options? Think about this more
+5. Create shareable template links for a published course
+6. Allow users to delete their created courses, no edits unfortunately
+
+## Collected User Feedback
+- Did my edit change it for everyone else?
+- Combo course name + number search (maybe as default)
+- Show something when > 100% (allow it but visually show it)
+- Walk Through for the whole website
+- kofi
+- Show why "Published Class" is greyed out - not logged in or already published/pulled from published
+- Force bucket width even with zero classes, ugly as is
+- Out of sync pop-up after publish class? Likely due to router.refresh() and server/client disagreeing on class.published
+- Edit class number broken? Like just not saving/not showing in sidebar
+- First user tour of interface - MOST NECESSARY THING
+- Search similar classes after publishing, popup if potential duplicates
+- Include "created at" date in search to solve outdated schema issue
+- Users should be able to delete published classes but can't edit
+
 # Create T3 App
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
