@@ -2,7 +2,6 @@
 
 import { useDataStore } from "@/data/store";
 import { useRouter } from "next/navigation";
-import { useShallow } from "zustand/react/shallow";
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,18 +15,17 @@ export default function SidebarClasses({
 }: {
   publishClass: (data: publishClassInput) => Promise<void>;
 }) {
-  const classIds = useDataStore(
-    useShallow((state) => Object.keys(state.classes)),
-  );
-  const classes = useDataStore.getState().classes;
+  const classes = useDataStore((state) => state.classes);
   const isHydrated = useDataStore((state) => state._hasHydrated);
 
   const router = useRouter();
 
+  const numClasses = Object.keys(classes).length;
+
   return (
     <>
       {isHydrated
-        ? classIds.length != 0 &&
+        ? numClasses != 0 &&
           Object.entries(classes).map(([_id, x]) => (
             <SidebarMenuItem key={x.id} className="">
               <div className="flex flex-row items-center justify-between">
