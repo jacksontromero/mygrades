@@ -166,21 +166,23 @@ export default function ClassDetails(params: { classId: string }) {
   }, [targetGrade, classId, setTargetGrade]);
 
   const screenWidth = useWindowWidth();
-  const widthPerBucket = screenWidth / weights.length;
   const widthBreakpoint = 240;
-  const vertical = widthPerBucket <= widthBreakpoint;
+  const vertical = screenWidth / weights.length <= widthBreakpoint;
 
   return (
     <div className={"w-full p-2" + (vertical ? " text-center" : "")}>
       <H4>{name} Details</H4>
       <div className="flex flex-col gap-2">
         <div
-          className={`mt-4 flex h-full w-full justify-around ${
-            vertical ? "flex-col items-center" : "flex-row"
+          className={`mt-4 ${
+            vertical ? "flex flex-col items-center" : "flex flex-row flex-wrap"
           }`}
         >
           {weights.map((x, i) => (
-            <div key={x.id}>
+            <div
+              key={x.id}
+              className={vertical ? "w-full" : "min-w-[200px] flex-1"}
+            >
               <Bucket classId={classId} x={x} i={i} vertical={vertical} />
               {vertical && (
                 <Separator
