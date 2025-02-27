@@ -110,14 +110,14 @@ export default function AddClassClient({
                     Search for a Class
                   </TabsTrigger>
                 </TabsList>
-                <TabsContent value="createClass" className="min-h-[372px]">
+                <TabsContent value="createClass" className="">
                   <ClassForm
                     form={form}
                     submit={submit}
                     formType={ClassFormType.CREATE}
                   />
                 </TabsContent>
-                <TabsContent value="searchClass" className="min-h-[372px]">
+                <TabsContent value="searchClass" className="">
                   {searchClassesContent}
                 </TabsContent>
               </Tabs>
