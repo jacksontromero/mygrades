@@ -1,17 +1,19 @@
 # TODO
+
 ## Feature Planning
-2. Small visual tweaks, force bucket width, "Add a New Class" dialog is weirdly tall
+
 3. Walk through! Probably gonna use shepard [shepard](https://github.com/shipshapecode/shepherd)
 4. Improve search
-    - Default name+number search
-    - Pagination
-    - Rank by # users and # inaccurate
-    - Include created at date
-    - Constrain "University/School" options? Think about this more
+   - Default name+number search
+   - Pagination
+   - Rank by # users and # inaccurate
+   - Include created at date
+   - Constrain "University/School" options? Think about this more
 5. Create shareable template links for a published course
 6. Allow users to delete their created courses, no edits unfortunately
 
 ## Collected User Feedback
+
 - Did my edit change it for everyone else?
 - Combo course name + number search (maybe as default)
 - Show something when > 100% (allow it but visually show it)
