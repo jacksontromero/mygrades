@@ -1,6 +1,5 @@
 # TODO
 ## Feature Planning
-1. Fix out of sync bug, edit class bugs
 2. Small visual tweaks, force bucket width, "Add a New Class" dialog is weirdly tall
 3. Walk through! Probably gonna use shepard [shepard](https://github.com/shipshapecode/shepherd)
 4. Improve search
