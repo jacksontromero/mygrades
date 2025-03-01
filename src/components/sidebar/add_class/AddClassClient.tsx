@@ -22,9 +22,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useShallow } from "zustand/react/shallow";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { NextStep, useNextStep } from "nextstepjs";
-import { welcomeTour } from "@/lib/tours";
-import ShadcnDarkModeCard from "@/components/ShadcnTourCard";
+import { useNextStep } from "nextstepjs";
 
 // pass searchClassesContent as a prop so it can be server-side rendered
 export default function AddClassClient({
@@ -36,11 +34,15 @@ export default function AddClassClient({
     useShallow((state) => Object.keys(state.classes).length),
   );
 
+  const has_hydrated = useDataStore((state) => state._hasHydrated);
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(numClasses === 0);
-  }, [numClasses]);
+    if (has_hydrated) {
+      setOpen(numClasses === 0);
+    }
+  }, [numClasses, has_hydrated]);
 
   const addClass = useDataStore((state) => state.addClass);
 
@@ -84,81 +86,83 @@ export default function AddClassClient({
     router.push(`/class/${newID}`);
   };
 
-  const { startNextStep, closeNextStep } = useNextStep();
+  const { startNextStep, closeNextStep, currentStep, setCurrentStep } =
+    useNextStep();
 
   useEffect(() => {
     if (open) {
-      console.log("starting tour");
-      startNextStep("welcome-tour");
+      setTimeout(() => {
+        startNextStep("welcome-tour");
+      }, 500);
     } else {
-      console.log("closing tour");
       closeNextStep();
     }
   }, [open, startNextStep, closeNextStep]);
 
+  const [tab, setTab] = useState("createClass");
+
   return (
-    <NextStep
-      steps={welcomeTour}
-      shadowOpacity="0.2"
-      cardComponent={ShadcnDarkModeCard}
-      cardTransition={{
-        delay: 0,
-        duration: 0,
-        ease: "easeInOut",
-      }}
-    >
-      <div className="flex justify-center">
-        <SidebarMenuButton asChild>
-          <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
-            <DialogTrigger asChild>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setOpen(true);
-                }}
-                className="my-2"
-              >
-                Add New Class
-              </Button>
-            </DialogTrigger>
-            <DialogContent
-              id="add-class-dialog"
-              className="w-full max-w-[800px]"
-              onInteractOutside={(e) => {
-                e.preventDefault();
+    <div className="flex justify-center">
+      <SidebarMenuButton asChild>
+        <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setOpen(true);
+              }}
+              className="my-2"
+            >
+              Add New Class
+            </Button>
+          </DialogTrigger>
+          <DialogContent
+            id="add-class-dialog"
+            className="w-full max-w-[800px]"
+            onInteractOutside={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold">
+                Add a New Class
+              </DialogTitle>
+            </DialogHeader>
+            <Tabs
+              defaultValue="createClass"
+              value={tab}
+              onValueChange={(v) => {
+                setTab(v);
+
+                setTimeout(() => {
+                  if (v === "createClass") {
+                    startNextStep("create-class-tour");
+                  } else {
+                    startNextStep("search-class-tour");
+                  }
+                }, 50);
               }}
             >
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold">
-                  Add a New Class
-                </DialogTitle>
-              </DialogHeader>
-              <div>
-                <Tabs defaultValue="createClass">
-                  <TabsList id="add-class-tabs">
-                    <TabsTrigger value="createClass">
-                      Create a Class
-                    </TabsTrigger>
-                    <TabsTrigger value="searchClass">
-                      Search for a Class
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="createClass" className="">
-                    <ClassForm
-                      form={form}
-                      submit={submit}
-                      formType={ClassFormType.CREATE}
-                    />
-                  </TabsContent>
-                  <TabsContent value="searchClass" className="">
-                    {searchClassesContent}
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </SidebarMenuButton>
-      </div>
-    </NextStep>
+              <TabsList id="add-class-tabs">
+                <TabsTrigger value="createClass">Create a Class</TabsTrigger>
+                <TabsTrigger value="searchClass">
+                  Search for a Class
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="createClass" className="">
+                <ClassForm
+                  form={form}
+                  submit={submit}
+                  formType={ClassFormType.CREATE}
+                />
+              </TabsContent>
+              <TabsContent value="searchClass" className="">
+                {searchClassesContent}
+              </TabsContent>
+            </Tabs>
+          </DialogContent>
+        </Dialog>
+      </SidebarMenuButton>
+    </div>
   );
 }

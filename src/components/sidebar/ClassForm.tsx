@@ -24,6 +24,8 @@ import { bucket, defaultBucket } from "@/data/store";
 import { Switch } from "../ui/switch";
 import SearchUniversities from "./add_class/SearchUniversities";
 import { P } from "../ui/typography";
+import { useNextStep } from "nextstepjs";
+import { useEffect } from "react";
 
 export const ClassFormSchema = z.object({
   courseName: z.string().min(1).max(255),
@@ -86,11 +88,19 @@ export default function ClassForm(params: {
     control: form.control,
   });
 
+  const { startNextStep, setCurrentStep, currentTour } = useNextStep();
+
+  useEffect(() => {
+    if (bucketsSum === 100) {
+      setCurrentStep(2);
+    }
+  }, [bucketsSum]);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(submit)}>
         <div className="mt-2 flex flex-row items-start gap-8">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" id="class-info-container">
             <FormField
               control={form.control}
               name="courseName"
@@ -102,6 +112,13 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="Imperative Computation"
+                      onFocus={() => {
+                        if (currentTour != "create-class-tour") {
+                          startNextStep("create-class-tour");
+                        } else {
+                          setCurrentStep(0);
+                        }
+                      }}
                       {...field}
                     />
                   </FormControl>
@@ -119,6 +136,13 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="15-122"
+                      onFocus={() => {
+                        if (currentTour != "create-class-tour") {
+                          startNextStep("create-class-tour");
+                        } else {
+                          setCurrentStep(0);
+                        }
+                      }}
                       {...field}
                     />
                   </FormControl>
@@ -126,7 +150,7 @@ export default function ClassForm(params: {
               )}
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" id="weights-container">
             <FormLabel className="mt-2">Weights</FormLabel>
             {fields.map((field, index) => {
               return (
@@ -143,6 +167,13 @@ export default function ClassForm(params: {
                                 required
                                 type="text"
                                 placeholder="Homework"
+                                onFocus={() => {
+                                  if (currentTour != "create-class-tour") {
+                                    startNextStep("create-class-tour");
+                                  } else {
+                                    setCurrentStep(1);
+                                  }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -168,6 +199,13 @@ export default function ClassForm(params: {
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
                                 }
+                                onFocus={() => {
+                                  if (currentTour != "create-class-tour") {
+                                    startNextStep("create-class-tour");
+                                  } else {
+                                    setCurrentStep(1);
+                                  }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -192,6 +230,13 @@ export default function ClassForm(params: {
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
                                 }
+                                onFocus={() => {
+                                  if (currentTour != "create-class-tour") {
+                                    startNextStep("create-class-tour");
+                                  } else {
+                                    setCurrentStep(1);
+                                  }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -245,6 +290,7 @@ export default function ClassForm(params: {
               case ClassFormType.CREATE:
                 return (
                   <Button
+                    id="add-class-button-form-button"
                     className="max-w-md"
                     type="submit"
                     disabled={bucketsSum != 100}

@@ -10,7 +10,10 @@ import { cookies } from "next/headers";
 import StoreManager from "@/data/StoreManager";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { NextStepProvider } from "nextstepjs";
+import { NextStep, NextStepProvider } from "nextstepjs";
+import ShadcnDarkModeCard from "@/components/tour/ShadcnTourCard";
+import { useState } from "react";
+import NextStepWrapper from "@/components/tour/NextStepWrapper";
 
 export const metadata: Metadata = {
   title: "Final Grade Calculator",
@@ -39,18 +42,20 @@ export default async function RootLayout({
           // disableTransitionOnChange
         >
           <NextStepProvider>
-            <SidebarProvider defaultOpen={defaultOpen}>
-              <SessionProvider>
-                <AppSidebar />
-                <StoreManager />
-                <main className="w-full">
-                  <Topbar />
-                  {children}
-                  <Analytics />
-                  <SpeedInsights />
-                </main>
-              </SessionProvider>
-            </SidebarProvider>
+            <NextStepWrapper>
+              <SidebarProvider defaultOpen={defaultOpen}>
+                <SessionProvider>
+                  <AppSidebar />
+                  <StoreManager />
+                  <main className="w-full">
+                    <Topbar />
+                    {children}
+                    <Analytics />
+                    <SpeedInsights />
+                  </main>
+                </SessionProvider>
+              </SidebarProvider>
+            </NextStepWrapper>
           </NextStepProvider>
         </ThemeProvider>
       </body>

@@ -38,6 +38,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SearchUniversities from "./SearchUniversities";
+import { useNextStep } from "nextstepjs";
 
 type SearchType = "name" | "number";
 
@@ -68,6 +69,8 @@ export function SearchClassesClient({
 
   const { status } = useSession();
 
+  const { currentStep, setCurrentStep, closeNextStep } = useNextStep();
+
   const handleSearch = async () => {
     if (searchQuery.length === 0) {
       return;
@@ -84,6 +87,8 @@ export function SearchClassesClient({
     }
 
     setIsLoading(false);
+
+    setCurrentStep(currentStep + 1);
   };
 
   const [selectedCourse, setSelectedCourse] = useState<
@@ -92,6 +97,11 @@ export function SearchClassesClient({
 
   const addClass = useDataStore((state) => state.addClass);
   const router = useRouter();
+
+  const handleInspectClass = (serverData: RetunredCourseInfo[0]) => {
+    setSelectedCourse(serverData);
+    closeNextStep();
+  };
 
   const handleAddClass = (serverData: RetunredCourseInfo[0]) => {
     const newID = uuidv4();
@@ -108,12 +118,17 @@ export function SearchClassesClient({
       published: true,
     });
 
+    closeNextStep();
+
     router.push(`/class/${newID}`);
   };
 
   return (
     <div className="flex w-full max-w-3xl">
-      <div className="flex w-1/3 flex-col space-y-4 p-4">
+      <div
+        className="flex w-1/3 flex-col space-y-4 p-4"
+        id="search-filters-container"
+      >
         <RadioGroup
           defaultValue="name"
           onValueChange={(value) => setSearchType(value as SearchType)}
@@ -153,7 +168,7 @@ export function SearchClassesClient({
         </div>
       </div>
       <Separator orientation="vertical" />
-      <div className="ml-2 w-2/3 p-2">
+      <div className="ml-2 w-2/3 p-2" id="search-results-container">
         <h3 className="mb-2 text-lg font-semibold">Search Results</h3>
         <ScrollArea className="h-[320px]">
           {searchResults.length > 0 ? (
@@ -206,7 +221,7 @@ export function SearchClassesClient({
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setSelectedCourse(course)}
+                              onClick={() => handleInspectClass(course)}
                             >
                               <HelpCircle />
                             </Button>
