@@ -68,3 +68,15 @@ export async function increaseNumUsers(classId: string) {
 
   return;
 }
+
+export async function getPublishedClassDetails(classId: string) {
+  const res = await db.query.publishedClasses.findFirst({
+    where: (model, { eq }) => eq(model.id, classId),
+  });
+
+  return res;
+}
+
+export type publishedClassType = Awaited<
+  ReturnType<typeof getPublishedClassDetails>
+>;

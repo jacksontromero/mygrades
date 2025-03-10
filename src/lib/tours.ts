@@ -7,9 +7,10 @@ export const tours: Tour[] = [
       {
         icon: "👋",
         title: "Welcome!",
-        content: "Let's walk though getting you started",
+        content:
+          "mygrads.app is *the* feature complete grade calculator for students. We'll walk you through creating a class schema, editing, and publishing it!",
         selector: "#add-class-dialog",
-        side: "top",
+        side: "left",
         showControls: true,
         pointerPadding: 0,
         pointerRadius: 0,
@@ -85,13 +86,92 @@ export const tours: Tour[] = [
         icon: "🔍",
         title: "Search Results",
         content:
-          "Click + to use it as a template or ? to inspect the class details",
+          "Click + to copy the class template or ? to inspect the template details",
         selector: "#search-results-container",
         showControls: true,
         side: "right",
         pointerPadding: 12,
         pointerRadius: 12,
         // showSkip: true,
+      },
+    ],
+  },
+  {
+    tour: "sidebar-tour",
+    steps: [
+      {
+        icon: "",
+        title: "Sidebar",
+        content: "Your sidebar shows all your classes and additional options",
+        selector: "#sidebar-for-tour",
+        showControls: true,
+        side: "right",
+        pointerPadding: 12,
+        pointerRadius: 12,
+      },
+      {
+        icon: "",
+        title: "Sign In",
+        content:
+          "By default all your data is local on your device. You can log in to sync your data across devices and publish your own schemas",
+        selector: "#sign-in-button",
+        showControls: true,
+        side: "top-left",
+        pointerPadding: 12,
+        pointerRadius: 12,
+      },
+      {
+        icon: "",
+        title: "Class Options",
+        content:
+          "Select a class by clicking on it. This is also where you edit, delete, and publish classes.",
+        selector: "#first-sidebar-class",
+        showControls: true,
+        side: "right",
+        pointerPadding: 12,
+        pointerRadius: 12,
+      },
+    ],
+  },
+  {
+    tour: "fill-in-class-tour",
+    steps: [
+      {
+        icon: "",
+        title: "Fill in Assignments",
+        content: "Give each assignment in a bucket a name and score",
+        selector: "#first-bucket",
+        showControls: true,
+        side: "top",
+        pointerPadding: 12,
+        pointerRadius: 12,
+      },
+      {
+        icon: "",
+        title: "Select target Assignment",
+        content:
+          "Choose the assignment you want to know your needed score for. For example, if your class has a final, create a weighted assignment for it and then select it.",
+        selector: "#select-target",
+        showControls: true,
+        side: "top",
+        pointerPadding: 12,
+        pointerRadius: 12,
+      },
+    ],
+  },
+  {
+    tour: "publish-tour",
+    steps: [
+      {
+        icon: "",
+        title: "Publish your Class",
+        content:
+          "Publishing lets a class appear in search results. You can choose whether to publish your assignment names (not scores don't worry!)",
+        selector: "#publish-target",
+        showControls: true,
+        side: "left",
+        pointerPadding: 12,
+        pointerRadius: 12,
       },
     ],
   },

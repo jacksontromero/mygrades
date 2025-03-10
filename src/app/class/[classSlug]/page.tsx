@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import ClassDetails from '@/app/class/[classSlug]/ClassDetails';
-import { useDataStore } from '@/data/store';
-import { useRouter } from 'next/navigation';
-import { use, useEffect } from 'react';
+import ClassDetails from "@/app/class/[classSlug]/ClassDetails";
+import { useDataStore } from "@/data/store";
+import { useRouter } from "next/navigation";
+import { use, useEffect } from "react";
 
 export default function Page({
   params,
@@ -12,7 +12,7 @@ export default function Page({
 }) {
   const { classSlug } = use(params);
   const classExists = useDataStore((state) =>
-    state.classes.hasOwnProperty(classSlug)
+    state.classes.hasOwnProperty(classSlug),
   );
 
   const hasHydrated = useDataStore((state) => state._hasHydrated);
@@ -20,7 +20,7 @@ export default function Page({
 
   useEffect(() => {
     if (hasHydrated && !classExists) {
-      router.push('/');
+      router.push("/");
     }
   }, [hasHydrated, classExists, router]);
 

@@ -135,16 +135,19 @@ export async function publishClass(classInfo: publishClassInput) {
     throw new Error("Not authenticated");
   }
 
-  await db.insert(publishedClasses).values({
-    name: classInfo.name,
-    number: classInfo.number,
-    weights: classInfo.weights,
-    university: classInfo.university,
-    createdById: session.user.id,
-    numUsers: 1,
-  });
+  const inserted = await db
+    .insert(publishedClasses)
+    .values({
+      name: classInfo.name,
+      number: classInfo.number,
+      weights: classInfo.weights,
+      university: classInfo.university,
+      createdById: session.user.id,
+      numUsers: 1,
+    })
+    .returning();
 
   await db.refreshMaterializedView(allUniversitiesView);
 
-  return;
+  return inserted[0]?.id;
 }

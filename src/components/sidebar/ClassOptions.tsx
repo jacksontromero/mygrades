@@ -38,6 +38,13 @@ import { SidebarMenuAction } from "../ui/sidebar";
 import { useSession } from "next-auth/react";
 import { P } from "../ui/typography";
 import { publishClassInput } from "@/server/authorized-queries";
+import { useNextStep } from "nextstepjs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 enum WhichDialog {
   EDIT,
@@ -46,7 +53,7 @@ enum WhichDialog {
 
 export default function ClassOptions(params: {
   existingClassId: string;
-  publishClass: (data: publishClassInput) => Promise<void>;
+  publishClass: (data: publishClassInput) => Promise<string | undefined>;
 }) {
   const { existingClassId, publishClass } = params;
   const existingClass = useDataStore(
@@ -93,6 +100,8 @@ export default function ClassOptions(params: {
     router.push(`/class/${existingClass.id}`);
   };
 
+  const setTourStatus = useDataStore((store) => store.setTourStatus);
+
   const submitPublish = async (
     formData: ClassFormData,
     event: BaseSyntheticEvent<object, any, any> | undefined,
@@ -128,15 +137,23 @@ export default function ClassOptions(params: {
       }));
     }
 
-    await publishClass(dataToSend);
+    const publishedId = await publishClass(dataToSend);
 
-    editClass(existingClass.id, {
-      ...existingClass,
-      published: true,
-    });
+    if (publishedId) {
+      editClass(existingClass.id, {
+        ...existingClass,
+        published: true,
+      });
 
-    form.reset();
-    setOpen(false);
+      if (currentTour === "publish-tour") {
+        setTourStatus("publish-tour", true);
+      }
+
+      form.reset();
+      setOpen(false);
+
+      router.push(`/class-template/${publishedId}`);
+    }
   };
 
   const deleteClass = useDataStore((state) => state.deleteClass);
@@ -147,6 +164,8 @@ export default function ClassOptions(params: {
     WhichDialog.EDIT,
   );
 
+  const { currentStep, currentTour, closeNextStep } = useNextStep();
+
   return (
     <div className="h-full">
       <Dialog
@@ -154,11 +173,20 @@ export default function ClassOptions(params: {
         onOpenChange={(open) => {
           setOpen(open);
           if (open == false) {
+            closeNextStep();
             form.reset();
           }
         }}
       >
-        <DropdownMenu>
+        <DropdownMenu
+          onOpenChange={(open) => {
+            if (open) {
+              if (currentStep == 2 && currentTour == "sidebar-tour") {
+                closeNextStep();
+              }
+            }
+          }}
+        >
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction>
               <MoreHorizontal />
@@ -174,17 +202,36 @@ export default function ClassOptions(params: {
                 <span>Edit Class</span>
               </DropdownMenuItem>
             </DialogTrigger>
-            <DialogTrigger
-              className="w-full"
-              disabled={existingClass.published || status !== "authenticated"}
-              onClick={() => setWhichDialogToShow(WhichDialog.PUBLISH)}
-            >
-              <DropdownMenuItem
-                disabled={existingClass.published || status !== "authenticated"}
-              >
-                <span>Publish Class</span>
-              </DropdownMenuItem>
-            </DialogTrigger>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger
+                    className="w-full"
+                    disabled={
+                      existingClass.published || status !== "authenticated"
+                    }
+                    onClick={() => setWhichDialogToShow(WhichDialog.PUBLISH)}
+                  >
+                    <DropdownMenuItem
+                      disabled={
+                        existingClass.published || status !== "authenticated"
+                      }
+                    >
+                      <span>Publish Class</span>
+                    </DropdownMenuItem>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {existingClass.published ? (
+                    <P>This class was already published</P>
+                  ) : status !== "authenticated" ? (
+                    <P>You have to log in to publish</P>
+                  ) : (
+                    <></>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
               <span>Delete Class</span>
             </DropdownMenuItem>
@@ -195,7 +242,12 @@ export default function ClassOptions(params: {
           switch (whichDialogToShow) {
             case WhichDialog.EDIT:
               return (
-                <DialogContent className="z-50w-full max-w-[700px]">
+                <DialogContent
+                  className="z-50w-full max-w-[700px]"
+                  onInteractOutside={(e) => {
+                    e.preventDefault();
+                  }}
+                >
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold">
                       Edit Existing Class
@@ -210,7 +262,12 @@ export default function ClassOptions(params: {
               );
             case WhichDialog.PUBLISH:
               return (
-                <DialogContent className="z-50w-full max-w-[700px]">
+                <DialogContent
+                  className="z-50w-full max-w-[700px]"
+                  onInteractOutside={(e) => {
+                    e.preventDefault();
+                  }}
+                >
                   <DialogHeader>
                     <DialogTitle className="text-xl font-bold">
                       Publish Class

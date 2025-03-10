@@ -4,6 +4,8 @@ import SaveChanges from "./SaveChanges";
 import ThemeButton from "./ThemeButton";
 import { serverDataStore } from "@/data/store";
 import { auth } from "@/server/auth";
+import TourButton from "./TourButton";
+import { useNextStep } from "nextstepjs";
 
 export default async function Topbar() {
   async function passedUpdateServerStore(data: serverDataStore) {
@@ -30,7 +32,10 @@ export default async function Topbar() {
       ) : (
         <></>
       )}
-      <ThemeButton />
+      <div>
+        <TourButton />
+        <ThemeButton />
+      </div>
     </div>
   );
 }

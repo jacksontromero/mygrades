@@ -40,6 +40,7 @@ export type schoolClass = {
 export type serverDataStore = {
   classes: Record<string, schoolClass>;
   schemaVersion: number;
+  tourStatus: Record<string, boolean>;
 };
 
 export type globalDataStore = {
@@ -81,6 +82,9 @@ export type globalDataStore = {
     a: assignment,
   ) => void;
   deleteClass(classId: string): void;
+  tourStatus: Record<string, boolean>;
+  setTourStatus: (tourName: string, status: boolean) => void;
+  resetTours: () => void;
 };
 
 export const defaultAssignment: () => assignment = () => ({
@@ -215,6 +219,15 @@ export const useDataStore = create<globalDataStore>()(
       deleteClass: (classId: string) =>
         set((state) => {
           delete state.classes[classId];
+        }),
+      tourStatus: {} as Record<string, boolean>,
+      setTourStatus: (tourName: string, status: boolean) =>
+        set((state) => {
+          state.tourStatus[tourName] = status;
+        }),
+      resetTours: () =>
+        set((state) => {
+          state.tourStatus = {};
         }),
     })),
     {

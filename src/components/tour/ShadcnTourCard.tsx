@@ -30,6 +30,10 @@ const ShadcnDarkModeCard = ({
   skipTour,
   arrow,
 }: ShadcnDarkModeCardProps) => {
+  if (!step) {
+    return <></>;
+  }
+
   return (
     <Card className="w-[300px]">
       <CardHeader className="py-3">

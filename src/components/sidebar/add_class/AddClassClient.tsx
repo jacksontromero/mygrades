@@ -104,7 +104,15 @@ export default function AddClassClient({
   return (
     <div className="flex justify-center">
       <SidebarMenuButton asChild>
-        <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+        <Dialog
+          open={open}
+          onOpenChange={(open) => {
+            if (!open) {
+              closeNextStep();
+            }
+            setOpen(open);
+          }}
+        >
           <DialogTrigger asChild>
             <Button
               variant="outline"

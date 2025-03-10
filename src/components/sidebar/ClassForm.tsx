@@ -91,14 +91,22 @@ export default function ClassForm(params: {
   const { startNextStep, setCurrentStep, currentTour } = useNextStep();
 
   useEffect(() => {
-    if (bucketsSum === 100) {
+    if (formType === ClassFormType.PUBLISH) {
+      setTimeout(() => {
+        startNextStep("publish-tour");
+      }, 500);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (bucketsSum === 100 && formType === ClassFormType.CREATE) {
       setCurrentStep(2);
     }
   }, [bucketsSum]);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(submit)}>
+      <form onSubmit={form.handleSubmit(submit)} id="publish-target">
         <div className="mt-2 flex flex-row items-start gap-8">
           <div className="flex flex-col gap-2" id="class-info-container">
             <FormField
@@ -113,11 +121,15 @@ export default function ClassForm(params: {
                       type="text"
                       placeholder="Imperative Computation"
                       onFocus={() => {
-                        if (currentTour != "create-class-tour") {
+                        if (
+                          currentTour != "create-class-tour" &&
+                          formType === ClassFormType.CREATE
+                        ) {
                           startNextStep("create-class-tour");
-                        } else {
-                          setCurrentStep(0);
                         }
+                        // else {
+                        //   setCurrentStep(0);
+                        // }
                       }}
                       {...field}
                     />
@@ -137,11 +149,15 @@ export default function ClassForm(params: {
                       type="text"
                       placeholder="15-122"
                       onFocus={() => {
-                        if (currentTour != "create-class-tour") {
+                        if (
+                          currentTour != "create-class-tour" &&
+                          formType === ClassFormType.CREATE
+                        ) {
                           startNextStep("create-class-tour");
-                        } else {
-                          setCurrentStep(0);
                         }
+                        // else {
+                        //   setCurrentStep(0);
+                        // }
                       }}
                       {...field}
                     />
@@ -168,11 +184,15 @@ export default function ClassForm(params: {
                                 type="text"
                                 placeholder="Homework"
                                 onFocus={() => {
-                                  if (currentTour != "create-class-tour") {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
                                     startNextStep("create-class-tour");
-                                  } else {
-                                    setCurrentStep(1);
                                   }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
                                 }}
                                 {...field}
                               />
@@ -200,11 +220,15 @@ export default function ClassForm(params: {
                                   (e.target as HTMLElement).blur()
                                 }
                                 onFocus={() => {
-                                  if (currentTour != "create-class-tour") {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
                                     startNextStep("create-class-tour");
-                                  } else {
-                                    setCurrentStep(1);
                                   }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
                                 }}
                                 {...field}
                               />
@@ -231,11 +255,15 @@ export default function ClassForm(params: {
                                   (e.target as HTMLElement).blur()
                                 }
                                 onFocus={() => {
-                                  if (currentTour != "create-class-tour") {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
                                     startNextStep("create-class-tour");
-                                  } else {
-                                    setCurrentStep(1);
                                   }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
                                 }}
                                 {...field}
                               />
