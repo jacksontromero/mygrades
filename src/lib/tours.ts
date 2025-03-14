@@ -8,7 +8,7 @@ export const tours: Tour[] = [
         icon: "👋",
         title: "Welcome!",
         content:
-          "mygrads.app is *the* feature complete grade calculator for students. We'll walk you through creating a class schema, editing, and publishing it!",
+          "MyGrades.app is *the* feature complete grade calculator for students. We'll walk you through creating a class schema, editing, and publishing it!",
         selector: "#add-class-dialog",
         side: "left",
         showControls: true,
@@ -86,7 +86,7 @@ export const tours: Tour[] = [
         icon: "🔍",
         title: "Search Results",
         content:
-          "Click + to copy the class template or ? to inspect the template details",
+          "Click + to copy the class template or ↗ to inspect the template details in a new tab",
         selector: "#search-results-container",
         showControls: true,
         side: "right",
@@ -166,7 +166,7 @@ export const tours: Tour[] = [
         icon: "",
         title: "Publish your Class",
         content:
-          "Publishing lets a class appear in search results. You can choose whether to publish your assignment names (not scores don't worry!)",
+          "Publishing lets a class appear in search results. You can choose whether to publish your assignment names (but not your scores, don't worry!)",
         selector: "#publish-target",
         showControls: true,
         side: "left",

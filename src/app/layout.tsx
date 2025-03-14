@@ -14,7 +14,7 @@ import NextStepWrapper from "@/components/tour/NextStepWrapper";
 import { NextStepProvider } from "nextstepjs";
 
 export const metadata: Metadata = {
-  title: "Final Grade Calculator",
+  title: "MyGrades.app",
   description:
     "Calculator for what grade you need on an assignment to get a specific grade in a class.  Supports multiple classes, grading schemes that make use of buckets/weights for different types of assignments, dropping/drops for the lowest assignments per bucket, and simulating average performance on assignments. ",
 };

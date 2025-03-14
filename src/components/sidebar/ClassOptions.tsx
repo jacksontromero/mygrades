@@ -94,7 +94,13 @@ export default function ClassOptions(params: {
       published: existingClass.published,
     });
 
-    form.reset();
+    // update default values for the form
+    form.reset({
+      courseName: formData.courseName,
+      courseNumber: formData.courseNumber,
+      buckets: formData.buckets,
+    });
+
     setOpen(false);
 
     router.push(`/class/${existingClass.id}`);
