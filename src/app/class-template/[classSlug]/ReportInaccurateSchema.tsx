@@ -2,6 +2,7 @@
 
 import { checkAlreadyReported, reportInaccurateSchema } from "@/server/authorized-queries";
 import ReportInaccurateSchema_Client from "./ReportInaccurateSchema_Client";
+import { auth } from "@/server/auth";
 
 export async function reportAction(classId: string) {
   "use server";
@@ -22,6 +23,12 @@ async function checkIfAlreadyReported(classId: string): Promise<boolean> {
   "use server";
 
   try {
+    // only check if user is authenticated
+    const session = await auth();
+    if (!session) {
+      return false;
+    }
+
     const alreadyReported = await checkAlreadyReported(classId);
     return alreadyReported;
   } catch (error) {
