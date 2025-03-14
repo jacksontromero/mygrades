@@ -23,6 +23,7 @@ import { useShallow } from "zustand/react/shallow";
 import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNextStep } from "nextstepjs";
+import { usePathname } from 'next/navigation'
 
 // pass searchClassesContent as a prop so it can be server-side rendered
 export default function AddClassClient({
@@ -38,11 +39,16 @@ export default function AddClassClient({
 
   const [open, setOpen] = useState(false);
 
+  const pathname = usePathname();
+
   useEffect(() => {
     if (has_hydrated) {
-      setOpen(numClasses === 0);
+      // only do this on non-class-template pages
+      if (!pathname.includes("/class-template")) {
+        setOpen(numClasses === 0);
+      }
     }
-  }, [numClasses, has_hydrated]);
+  }, [numClasses, has_hydrated, pathname]);
 
   const addClass = useDataStore((state) => state.addClass);
 
