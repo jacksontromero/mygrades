@@ -80,3 +80,33 @@ export async function getPublishedClassDetails(classId: string) {
 export type publishedClassType = Awaited<
   ReturnType<typeof getPublishedClassDetails>
 >;
+
+export async function searchPublishedClasses(
+  query: string,
+  university: string | null = null,
+  paginationIdx = 0,
+) {
+  const res = await db
+    .select({
+      ...getTableColumns(publishedClasses),
+      similarity: sql<number>`GREATEST(
+        similarity(${query}, ${publishedClasses.name}),
+        similarity(${query}, ${publishedClasses.number})
+      )`,
+    })
+    .from(publishedClasses)
+    .where((x) =>
+      and(
+        sql`GREATEST(
+          similarity(${query}, ${publishedClasses.name}),
+          similarity(${query}, ${publishedClasses.number})
+        ) > 0.2`,
+        university ? eq(x.university, university) : undefined,
+      ),
+    )
+    .orderBy((x) => desc(x.similarity))
+    .limit(paginationSize)
+    .offset(paginationIdx * paginationSize);
+
+  return res;
+}

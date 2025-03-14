@@ -96,13 +96,13 @@ export default function ClassForm(params: {
         startNextStep("publish-tour");
       }, 500);
     }
-  }, []);
+  }, [formType, startNextStep]);
 
   useEffect(() => {
     if (bucketsSum === 100 && formType === ClassFormType.CREATE && currentTour === "create-class-tour") {
       setCurrentStep(2);
     }
-  }, [bucketsSum, currentTour]);
+  }, [bucketsSum, currentTour, formType, setCurrentStep]);
 
   return (
     <Form {...form}>

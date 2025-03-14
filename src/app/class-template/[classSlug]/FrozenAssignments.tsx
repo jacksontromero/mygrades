@@ -1,9 +1,5 @@
 import { bucket } from "@/data/store";
-import { Input } from "../../../components/ui/input";
 import { P } from "../../../components/ui/typography";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 
 export default function FrozenAssignments(params: { bucket: bucket }) {
   const { bucket } = params;
@@ -18,7 +14,7 @@ export default function FrozenAssignments(params: { bucket: bucket }) {
         </div>
       )}
 
-      {bucket.assignments.map((assignment, i) => (
+      {bucket.assignments.map((assignment) => (
         <div
           key={assignment.id}
           className="rounded-md bg-background p-2 transition-colors hover:bg-muted/20"

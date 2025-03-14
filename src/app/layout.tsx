@@ -10,10 +10,8 @@ import { cookies } from "next/headers";
 import StoreManager from "@/data/StoreManager";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { NextStep, NextStepProvider } from "nextstepjs";
-import ShadcnDarkModeCard from "@/components/tour/ShadcnTourCard";
-import { useState } from "react";
 import NextStepWrapper from "@/components/tour/NextStepWrapper";
+import { NextStepProvider } from "nextstepjs";
 
 export const metadata: Metadata = {
   title: "Final Grade Calculator",

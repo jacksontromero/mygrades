@@ -86,7 +86,7 @@ export default function AddClassClient({
     router.push(`/class/${newID}`);
   };
 
-  const { startNextStep, closeNextStep, currentStep, setCurrentStep } =
+  const { startNextStep, closeNextStep } =
     useNextStep();
 
   useEffect(() => {

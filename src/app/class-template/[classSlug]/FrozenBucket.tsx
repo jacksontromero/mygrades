@@ -1,7 +1,6 @@
 "use client";
 
-import { Separator } from "@/components/ui/separator";
-import { H3, P } from "@/components/ui/typography";
+import { H3 } from "@/components/ui/typography";
 import { useWindowWidth } from "@react-hook/window-size/throttled";
 import { bucket } from "src/data/store";
 import FrozenAssignments from "./FrozenAssignments";

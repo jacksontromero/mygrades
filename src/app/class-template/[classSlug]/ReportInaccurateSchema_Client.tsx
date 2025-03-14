@@ -39,7 +39,7 @@ export default function ReportInaccurateSchema_Client({
         setHasReported(true);
         router.refresh();
       } else {
-        setError(result.error || "Unknown error occurred");
+        setError(result.error ?? "Unknown error occurred");
         // If it's an already reported error, still show as reported
         if (result.error?.includes("already reported")) {
           setHasReported(true);

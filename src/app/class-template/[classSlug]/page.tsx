@@ -4,7 +4,6 @@ import AddFromTemplateButton from "./AddFromTemplateButton";
 import FrozenBucket from "./FrozenBucket";
 import CopyLinkButton from "./CopyLinkButton";
 import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import ReportInaccurateSchema from "./ReportInaccurateSchema";
 
 export default async function Page({
