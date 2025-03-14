@@ -44,7 +44,7 @@ export default function PopulateStore(params: {
         }
       }
     }
-  }, [serverStore, existingStore, runOnce]);
+  }, [serverStore, existingStore, runOnce, mismatchedClasses, setMismatchedDialogOpen]);
 
   if (mismatchedClasses.length > 0) {
     return (

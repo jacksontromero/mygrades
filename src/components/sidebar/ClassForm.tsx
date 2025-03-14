@@ -24,6 +24,8 @@ import { bucket, defaultBucket } from "@/data/store";
 import { Switch } from "../ui/switch";
 import SearchUniversities from "./add_class/SearchUniversities";
 import { P } from "../ui/typography";
+import { useNextStep } from "nextstepjs";
+import { useEffect } from "react";
 
 export const ClassFormSchema = z.object({
   courseName: z.string().min(1).max(255),
@@ -86,11 +88,27 @@ export default function ClassForm(params: {
     control: form.control,
   });
 
+  const { startNextStep, setCurrentStep, currentTour } = useNextStep();
+
+  useEffect(() => {
+    if (formType === ClassFormType.PUBLISH) {
+      setTimeout(() => {
+        startNextStep("publish-tour");
+      }, 500);
+    }
+  }, [formType, startNextStep]);
+
+  useEffect(() => {
+    if (bucketsSum === 100 && formType === ClassFormType.CREATE && currentTour === "create-class-tour") {
+      setCurrentStep(2);
+    }
+  }, [bucketsSum, currentTour, formType, setCurrentStep]);
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(submit)}>
+      <form onSubmit={form.handleSubmit(submit)} id="publish-target">
         <div className="mt-2 flex flex-row items-start gap-8">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" id="class-info-container">
             <FormField
               control={form.control}
               name="courseName"
@@ -102,6 +120,19 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="Imperative Computation"
+                      disabled={formType === ClassFormType.PUBLISH}
+                      readOnly={formType === ClassFormType.PUBLISH}
+                      onFocus={() => {
+                        if (
+                          currentTour != "create-class-tour" &&
+                          formType === ClassFormType.CREATE
+                        ) {
+                          startNextStep("create-class-tour");
+                        }
+                        // else {
+                        //   setCurrentStep(0);
+                        // }
+                      }}
                       {...field}
                     />
                   </FormControl>
@@ -119,6 +150,19 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="15-122"
+                      disabled={formType === ClassFormType.PUBLISH}
+                      readOnly={formType === ClassFormType.PUBLISH}
+                      onFocus={() => {
+                        if (
+                          currentTour != "create-class-tour" &&
+                          formType === ClassFormType.CREATE
+                        ) {
+                          startNextStep("create-class-tour");
+                        }
+                        // else {
+                        //   setCurrentStep(0);
+                        // }
+                      }}
                       {...field}
                     />
                   </FormControl>
@@ -126,7 +170,7 @@ export default function ClassForm(params: {
               )}
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2" id="weights-container">
             <FormLabel className="mt-2">Weights</FormLabel>
             {fields.map((field, index) => {
               return (
@@ -143,6 +187,19 @@ export default function ClassForm(params: {
                                 required
                                 type="text"
                                 placeholder="Homework"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
+                                onFocus={() => {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
+                                    startNextStep("create-class-tour");
+                                  }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -163,11 +220,25 @@ export default function ClassForm(params: {
                               <Input
                                 required
                                 type="number"
+                                placeholder="25"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
                                 min={0}
                                 max={100}
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
                                 }
+                                onFocus={() => {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
+                                    startNextStep("create-class-tour");
+                                  }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -188,10 +259,24 @@ export default function ClassForm(params: {
                               <Input
                                 required
                                 type="number"
+                                placeholder="0"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
                                 min={0}
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
                                 }
+                                onFocus={() => {
+                                  if (
+                                    currentTour != "create-class-tour" &&
+                                    formType === ClassFormType.CREATE
+                                  ) {
+                                    startNextStep("create-class-tour");
+                                  }
+                                  // else {
+                                  //   setCurrentStep(1);
+                                  // }
+                                }}
                                 {...field}
                               />
                             </FormControl>
@@ -208,6 +293,8 @@ export default function ClassForm(params: {
                           className="-mt-7"
                           type="button"
                           onClick={() => remove(index)}
+                          disabled={formType === ClassFormType.PUBLISH}
+                          style={{ opacity: formType === ClassFormType.PUBLISH ? 0.5 : 1, cursor: formType === ClassFormType.PUBLISH ? 'not-allowed' : 'pointer' }}
                         >
                           <Trash2Icon className="text-destructive" size={20} />
                         </TooltipTrigger>
@@ -222,11 +309,10 @@ export default function ClassForm(params: {
             })}
             <div className="flex justify-between gap-1 pt-2">
               <Button
-                onClick={() => {
-                  append(defaultBucket());
-                }}
                 type="button"
                 variant="outline"
+                onClick={() => append(defaultBucket())}
+                disabled={formType === ClassFormType.PUBLISH || bucketsSum >= 100}
               >
                 Add Bucket
               </Button>
@@ -245,6 +331,7 @@ export default function ClassForm(params: {
               case ClassFormType.CREATE:
                 return (
                   <Button
+                    id="add-class-button-form-button"
                     className="max-w-md"
                     type="submit"
                     disabled={bucketsSum != 100}

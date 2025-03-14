@@ -50,6 +50,7 @@ export default function SaveChanges(params: {
           const res = updateServerStore({
             classes: wholeStore.classes,
             schemaVersion: 0,
+            tourStatus: wholeStore.tourStatus
           });
 
           setMutated(false);

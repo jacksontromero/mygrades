@@ -13,6 +13,8 @@ import { H3, H4, P } from "../../../components/ui/typography";
 import { Separator } from "../../../components/ui/separator";
 import { Button } from "../../../components/ui/button";
 import Bucket from "./Bucket";
+import { useNextStep } from "nextstepjs";
+import { Label } from "@/components/ui/label";
 
 export function calculateScores(b: bucket): { dropped: number; raw: number } {
   const nonSim = b.assignments.filter((x) => !x.simulated);
@@ -161,9 +163,24 @@ export default function ClassDetails(params: { classId: string }) {
           e.target.select();
         }}
         onWheel={(e) => (e.target as HTMLElement).blur()}
+        id="target-grade-box"
       />,
     );
   }, [targetGrade, classId, setTargetGrade]);
+
+  const { startNextStep } = useNextStep();
+
+  const tourStatus = useDataStore((state) => state.tourStatus);
+
+  useEffect(() => {
+    // if haven't had the sidebar tour, start that one, otherwise start the fill-in-class tour
+
+    if (!tourStatus["sidebar-tour"]) {
+      startNextStep("sidebar-tour");
+    } else {
+      startNextStep("fill-in-class-tour");
+    }
+  }, [startNextStep, tourStatus]);
 
   const screenWidth = useWindowWidth();
   const widthBreakpoint = 240;
@@ -180,6 +197,7 @@ export default function ClassDetails(params: { classId: string }) {
         >
           {weights.map((x, i) => (
             <div
+              id={i == 0 ? "first-bucket" : ""}
               key={x.id}
               className={vertical ? "w-full" : "min-w-[200px] flex-1"}
             >
@@ -196,44 +214,49 @@ export default function ClassDetails(params: { classId: string }) {
 
         <div className="sticky bottom-0 flex flex-col items-center justify-center gap-2 bg-background pb-2">
           <Separator className="mt-2 bg-gradient-to-t from-background" />
-          <H3 className="mb-4 text-center">
-            Total Grade: {totalGrade(weights).toFixed(2)}%
-          </H3>
-          <div className="flex flex-row items-center justify-center gap-4">
-            {targetGradeBox}
-            <Button
-              size="lg"
-              variant={
-                selectingState == SelectingStates.SELECTING
-                  ? "outline"
-                  : "default"
-              }
-              onClick={() => {
-                if (selectingState == SelectingStates.SELECTING) {
-                  resetSelectAssignment(classId, SelectingStates.FIRST_LOAD);
-                } else {
-                  resetSelectAssignment(classId, SelectingStates.SELECTING);
+          <div id="select-target">
+            <H3 className="mb-4 text-center">
+              Total Grade: {totalGrade(weights).toFixed(2)}%
+            </H3>
+            <div className="flex flex-row items-end justify-center gap-4">
+              <div>
+                <Label htmlFor="target-grade-box">Target Class Grade</Label>
+                {targetGradeBox}
+              </div>
+              <Button
+                size="lg"
+                variant={
+                  selectingState == SelectingStates.SELECTING
+                    ? "outline"
+                    : "default"
                 }
-              }}
-            >
-              {selectingState == SelectingStates.SELECTING
-                ? "Cancel Selection"
-                : "Select Target Assignment"}
-            </Button>
+                onClick={() => {
+                  if (selectingState == SelectingStates.SELECTING) {
+                    resetSelectAssignment(classId, SelectingStates.FIRST_LOAD);
+                  } else {
+                    resetSelectAssignment(classId, SelectingStates.SELECTING);
+                  }
+                }}
+              >
+                {selectingState == SelectingStates.SELECTING
+                  ? "Cancel Selection"
+                  : "Select Target Assignment"}
+              </Button>
+            </div>
+            {selectingState == SelectingStates.SELECTED && (
+              <P className="text-center text-lg font-bold">
+                Score necessary on selected assignment to get ≥ {targetGrade}%:{" "}
+                {(
+                  calculateScoreNecessary(
+                    selectedAssignment,
+                    selectedBucket,
+                    weights,
+                    targetGrade,
+                  ) * 100
+                ).toFixed(2)}
+              </P>
+            )}
           </div>
-          {selectingState == SelectingStates.SELECTED && (
-            <P className="text-center text-lg font-bold">
-              Score necessary on selected assignment to get ≥ {targetGrade}%:{" "}
-              {(
-                calculateScoreNecessary(
-                  selectedAssignment,
-                  selectedBucket,
-                  weights,
-                  targetGrade,
-                ) * 100
-              ).toFixed(2)}
-            </P>
-          )}
         </div>
       </div>
     </div>

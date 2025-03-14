@@ -13,7 +13,7 @@ import { publishClassInput } from "@/server/authorized-queries";
 export default function SidebarClasses({
   publishClass,
 }: {
-  publishClass: (data: publishClassInput) => Promise<void>;
+  publishClass: (data: publishClassInput) => Promise<string | undefined>;
 }) {
   const classes = useDataStore((state) => state.classes);
   const isHydrated = useDataStore((state) => state._hasHydrated);
@@ -26,9 +26,12 @@ export default function SidebarClasses({
     <>
       {isHydrated
         ? numClasses != 0 &&
-          Object.entries(classes).map(([_id, x]) => (
+          Object.entries(classes).map(([_id, x], i) => (
             <SidebarMenuItem key={x.id} className="">
-              <div className="flex flex-row items-center justify-between">
+              <div
+                className="flex flex-row items-center justify-between"
+                id={i === 0 ? "first-sidebar-class" : ""}
+              >
                 <SidebarMenuButton
                   className="h-auto"
                   onClick={() => router.push(`/class/${x.id}`)}

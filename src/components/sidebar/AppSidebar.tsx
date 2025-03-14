@@ -35,7 +35,7 @@ export async function AppSidebar() {
 
   return (
     <SharedContextProvider allUniversities={allUniversities}>
-      <Sidebar>
+      <Sidebar id="sidebar-for-tour">
         <SidebarHeader>
           <Link href="/">
             <H1 className="!text-[1.5rem]">mygrades.app</H1>
@@ -92,7 +92,9 @@ export async function AppSidebar() {
                 }}
               />
             ) : (
-              <SignIn />
+              <div id="sign-in-button">
+                <SignIn />
+              </div>
             )}
           </SidebarMenu>
         </SidebarFooter>

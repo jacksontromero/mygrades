@@ -19,7 +19,11 @@ export default function ThemeButton() {
   }, []);
 
   if (!mounted) {
-    return <Button variant="ghost" size="icon"></Button>;
+    return (
+      <Button variant="ghost" size="icon" className="h-[1.2rem] w-[1.2rem]">
+        <></>
+      </Button>
+    );
   }
 
   return (
