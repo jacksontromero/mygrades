@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { AlertTriangle, HelpCircle, Plus, Users } from "lucide-react";
+import { AlertTriangle, HelpCircle, Plus, Users, ExternalLink } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -46,8 +46,6 @@ export function SearchClassesClient({
   searchName,
   searchNumber,
   increaseNumUsers,
-  reportInaccurate,
-  reportedInaccurateClasses,
 }: {
   searchName: (
     name: string,
@@ -58,8 +56,6 @@ export function SearchClassesClient({
     university: string | null,
   ) => Promise<RetunredCourseInfo>;
   increaseNumUsers: (classId: string) => Promise<void>;
-  reportInaccurate: (classId: string) => Promise<void>;
-  reportedInaccurateClasses: Set<string>;
 }) {
   const [searchType, setSearchType] = useState<SearchType>("name");
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,7 +65,7 @@ export function SearchClassesClient({
 
   const { status } = useSession();
 
-  const { currentStep, setCurrentStep, closeNextStep } = useNextStep();
+  const { currentStep, setCurrentStep, closeNextStep, currentTour } = useNextStep();
 
   const handleSearch = async () => {
     if (searchQuery.length === 0) {
@@ -88,7 +84,9 @@ export function SearchClassesClient({
 
     setIsLoading(false);
 
-    setCurrentStep(currentStep + 1);
+    if (currentTour === "search-class-tour") {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const [selectedCourse, setSelectedCourse] = useState<
@@ -221,13 +219,13 @@ export function SearchClassesClient({
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleInspectClass(course)}
+                              onClick={() => window.open(`/class-template/${course.id}`, '_blank')}
                             >
-                              <HelpCircle />
+                              <ExternalLink size={18} />
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>View grading schema</p>
+                            <p>Inspect class template</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
@@ -256,7 +254,7 @@ export function SearchClassesClient({
                 </li>
               ))}
 
-              <Dialog
+              {/* <Dialog
                 open={!!selectedCourse}
                 onOpenChange={() => setSelectedCourse(null)}
               >
@@ -356,7 +354,7 @@ export function SearchClassesClient({
                     )}
                   </div>
                 </DialogContent>
-              </Dialog>
+              </Dialog> */}
             </ul>
           ) : (
             <p className="text-muted-foreground">No results found</p>

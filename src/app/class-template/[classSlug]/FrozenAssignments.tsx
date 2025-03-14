@@ -3,101 +3,52 @@ import { Input } from "../../../components/ui/input";
 import { P } from "../../../components/ui/typography";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 export default function FrozenAssignments(params: { bucket: bucket }) {
   const { bucket } = params;
 
   return (
-    <div className="mt-2 flex flex-col items-center gap-0">
-      {bucket.assignments.map((x, i) => (
+    <div className="flex flex-col gap-3">
+      {bucket.assignments.length > 0 && (
+        <div className="grid grid-cols-12 gap-2 px-1 text-sm font-medium text-muted-foreground">
+          <div className="col-span-9">Assignment Name</div>
+          {/* <div className="col-span-3 text-center">Score</div> */}
+          <div className="col-span-3 text-center">Out Of</div>
+        </div>
+      )}
+
+      {bucket.assignments.map((assignment, i) => (
         <div
-          key={x.id}
-          className={`rounded-md bg-background bg-primary/20 px-1 py-1`}
+          key={assignment.id}
+          className="rounded-md bg-background p-2 transition-colors hover:bg-muted/20"
         >
-          (
-          <form>
-            <div className="flex flex-row items-end gap-1">
-              <div className="grid w-[35%] items-center gap-1.5">
-                {i == 0 && (
-                  <Label
-                    className="overflow-hidden text-clip text-muted-foreground"
-                    htmlFor="assignment-name-0"
-                  >
-                    Assignment Name
-                  </Label>
-                )}
-                <Input
-                  id={`assignment-name-${i}`}
-                  className="w-full"
-                  disabled={true}
-                  defaultValue={x.name}
-                  onFocus={(e) => {
-                    e.target.select();
-                  }}
-                />
-              </div>
-
-              <div className="grid w-[28%] items-center gap-1.5">
-                {i == 0 && (
-                  <Label
-                    className="text-muted-foreground"
-                    htmlFor="assignment-score-0"
-                  >
-                    Score
-                  </Label>
-                )}
-                <Input
-                  id={`assignment-score-${i}`}
-                  className={cn(
-                    "w-full",
-                    x.score > x.outOf &&
-                      "bg-destructive/10 hover:bg-destructive/20",
-                  )}
-                  disabled={true}
-                  type="number"
-                  defaultValue={x.score}
-                  placeholder="Score"
-                  min={0}
-                  onFocus={(e) => {
-                    e.target.select();
-                  }}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                />
-              </div>
-
-              <div className="grid w-[28%] items-center gap-1.5">
-                {i == 0 && (
-                  <Label
-                    className="text-muted-foreground"
-                    htmlFor="assignment-out-of-0"
-                  >
-                    Out Of
-                  </Label>
-                )}
-                <Input
-                  id={`assignment-out-of-${i}`}
-                  className="w-full"
-                  disabled={true}
-                  type="number"
-                  defaultValue={x.outOf}
-                  placeholder="Out Of"
-                  min={0}
-                  onFocus={(e) => {
-                    e.target.select();
-                  }}
-                  onWheel={(e) => (e.target as HTMLElement).blur()}
-                />
-              </div>
+          <div className="grid grid-cols-12 items-center gap-2">
+            <div className="col-span-9 truncate font-medium">
+              {assignment.name}
             </div>
-          </form>
+            {/* <div className="col-span-3 text-center">
+              <span className={cn(
+                "inline-block min-w-8 rounded bg-primary/10 py-1 text-center",
+                assignment.score > assignment.outOf && "bg-destructive/20"
+              )}>
+                {assignment.score}
+              </span>
+            </div> */}
+            <div className="col-span-3 text-center">
+              <span className="inline-block min-w-8 rounded bg-muted/30 py-1 text-center">
+                {assignment.outOf}
+              </span>
+            </div>
+          </div>
         </div>
       ))}
-      {bucket.assignments.length === 0 ? (
-        <>
+
+      {bucket.assignments.length === 0 && (
+        <div className="flex h-20 flex-col items-center justify-center rounded-md border border-dashed p-4 text-center">
           <P className="text-muted-foreground">No pre-filled assignments</P>
-        </>
-      ) : (
-        <></>
+          <P className="text-xs text-muted-foreground">Assignments will be added when you add this class</P>
+        </div>
       )}
     </div>
   );

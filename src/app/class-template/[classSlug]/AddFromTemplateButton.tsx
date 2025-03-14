@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useNextStep } from "nextstepjs";
 import { Button } from "@/components/ui/button";
 import { publishedClassType } from "@/server/unauthorized-queries";
+import { PlusIcon } from "lucide-react";
 
 export default function AddFromTemplateButton(params: {
   serverData: NonNullable<publishedClassType>;
@@ -38,8 +39,13 @@ export default function AddFromTemplateButton(params: {
   };
 
   return (
-    <Button size="lg" className="text-lg" onClick={handleAddClass}>
-      Add to My Classes
+    <Button
+      size="lg"
+      className="group gap-2 px-4 py-2 font-medium transition-all hover:bg-primary/90"
+      onClick={handleAddClass}
+    >
+      <PlusIcon size={18} className="transition-transform group-hover:rotate-90" />
+      <span>Add to My Classes</span>
     </Button>
   );
 }

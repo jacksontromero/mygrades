@@ -56,26 +56,26 @@ export async function updateUserStore(data: serverDataStore) {
   return;
 }
 
-/**
- *
- * @returns A set of class IDs that the user has reported as inaccurate,
-or an empty set if the user has not reported any classes.
- */
-export async function getUserReportedInaccurateClasses() {
-  const session = await auth();
+// /**
+//  *
+//  * @returns A set of class IDs that the user has reported as inaccurate,
+// or an empty set if the user has not reported any classes.
+//  */
+// export async function getUserReportedInaccurateClasses() {
+//   const session = await auth();
 
-  if (!session) {
-    return new Set([]);
-  }
+//   if (!session) {
+//     return new Set([]);
+//   }
 
-  const res = await db.query.usersToInaccurateReports.findMany({
-    where: (model, { eq }) => eq(model.userId, session.user.id),
-  });
+//   const res = await db.query.usersToInaccurateReports.findMany({
+//     where: (model, { eq }) => eq(model.userId, session.user.id),
+//   });
 
-  return new Set(res.map((x) => x.classId));
-}
+//   return new Set(res.map((x) => x.classId));
+// }
 
-async function checkAlreadyReported(classId: string) {
+export async function checkAlreadyReported(classId: string) {
   const session = await auth();
 
   if (!session) {

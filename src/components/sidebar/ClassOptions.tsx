@@ -112,27 +112,38 @@ export default function ClassOptions(params: {
       throw new Error("No publish info");
     }
 
+    // Get the current class data directly from the store
+    const currentClass = useDataStore.getState().classes[existingClassId];
+
+    if (!currentClass) {
+      throw new Error("Class not found");
+    }
+
+    // Create the data to send using the current class data, not form data
     const dataToSend: publishClassInput = {
-      name: formData.courseName,
-      number: formData.courseNumber,
-      weights: formData.buckets,
+      name: currentClass.name,
+      number: currentClass.number,
+      weights: currentClass.weights,
       university: formData.publishInfo.university,
     };
 
+    // Only use form data for publishing options
     if (formData.publishInfo.includeAssignments) {
-      // stip out all current scores
-      dataToSend.weights = dataToSend.weights.map((x) => ({
-        ...x,
-        assignments: x.assignments.map((y) => ({
-          ...y,
+      // Keep assignment details but reset scores
+      dataToSend.weights = dataToSend.weights.map((bucket) => ({
+        ...bucket,
+        assignments: bucket.assignments.map((assignment) => ({
+          id: assignment.id,
+          name: assignment.name,
+          outOf: assignment.outOf,
           score: 0,
           simulated: false,
         })),
       }));
     } else {
-      // stip out all assignments
-      dataToSend.weights = dataToSend.weights.map((x) => ({
-        ...x,
+      // strip out all assignments
+      dataToSend.weights = dataToSend.weights.map((bucket) => ({
+        ...bucket,
         assignments: [],
       }));
     }
@@ -221,15 +232,18 @@ export default function ClassOptions(params: {
                     </DropdownMenuItem>
                   </DialogTrigger>
                 </TooltipTrigger>
-                <TooltipContent>
+
                   {existingClass.published ? (
-                    <P>This class was already published</P>
+                    <TooltipContent>
+                      <P>This class was already published</P>
+                    </TooltipContent>
                   ) : status !== "authenticated" ? (
-                    <P>You have to log in to publish</P>
+                    <TooltipContent>
+                      <P>You have to log in to publish</P>
+                    </TooltipContent>
                   ) : (
                     <></>
                   )}
-                </TooltipContent>
               </Tooltip>
             </TooltipProvider>
             <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>

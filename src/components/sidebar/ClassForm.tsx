@@ -99,10 +99,10 @@ export default function ClassForm(params: {
   }, []);
 
   useEffect(() => {
-    if (bucketsSum === 100 && formType === ClassFormType.CREATE) {
+    if (bucketsSum === 100 && formType === ClassFormType.CREATE && currentTour === "create-class-tour") {
       setCurrentStep(2);
     }
-  }, [bucketsSum]);
+  }, [bucketsSum, currentTour]);
 
   return (
     <Form {...form}>
@@ -120,6 +120,8 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="Imperative Computation"
+                      disabled={formType === ClassFormType.PUBLISH}
+                      readOnly={formType === ClassFormType.PUBLISH}
                       onFocus={() => {
                         if (
                           currentTour != "create-class-tour" &&
@@ -148,6 +150,8 @@ export default function ClassForm(params: {
                       required
                       type="text"
                       placeholder="15-122"
+                      disabled={formType === ClassFormType.PUBLISH}
+                      readOnly={formType === ClassFormType.PUBLISH}
                       onFocus={() => {
                         if (
                           currentTour != "create-class-tour" &&
@@ -183,6 +187,8 @@ export default function ClassForm(params: {
                                 required
                                 type="text"
                                 placeholder="Homework"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
                                 onFocus={() => {
                                   if (
                                     currentTour != "create-class-tour" &&
@@ -214,6 +220,9 @@ export default function ClassForm(params: {
                               <Input
                                 required
                                 type="number"
+                                placeholder="25"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
                                 min={0}
                                 max={100}
                                 onWheel={(e) =>
@@ -250,6 +259,9 @@ export default function ClassForm(params: {
                               <Input
                                 required
                                 type="number"
+                                placeholder="0"
+                                disabled={formType === ClassFormType.PUBLISH}
+                                readOnly={formType === ClassFormType.PUBLISH}
                                 min={0}
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
@@ -281,6 +293,8 @@ export default function ClassForm(params: {
                           className="-mt-7"
                           type="button"
                           onClick={() => remove(index)}
+                          disabled={formType === ClassFormType.PUBLISH}
+                          style={{ opacity: formType === ClassFormType.PUBLISH ? 0.5 : 1, cursor: formType === ClassFormType.PUBLISH ? 'not-allowed' : 'pointer' }}
                         >
                           <Trash2Icon className="text-destructive" size={20} />
                         </TooltipTrigger>
@@ -295,11 +309,10 @@ export default function ClassForm(params: {
             })}
             <div className="flex justify-between gap-1 pt-2">
               <Button
-                onClick={() => {
-                  append(defaultBucket());
-                }}
                 type="button"
                 variant="outline"
+                onClick={() => append(defaultBucket())}
+                disabled={formType === ClassFormType.PUBLISH || bucketsSum >= 100}
               >
                 Add Bucket
               </Button>

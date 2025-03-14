@@ -8,7 +8,6 @@ import {
 import AddClassClient from "./AddClassClient";
 import { SearchClassesClient } from "./SearchClassesClient";
 import {
-  getUserReportedInaccurateClasses,
   reportInaccurateSchema,
 } from "@/server/authorized-queries";
 
@@ -46,15 +45,11 @@ async function SearchClasses() {
     return await reportInaccurateSchema(classId);
   }
 
-  const reportedInaccurateClasses = await getUserReportedInaccurateClasses();
-
   return (
     <SearchClassesClient
       searchName={boundSearchName}
       searchNumber={boundSearchNumber}
       increaseNumUsers={boundIncreaseNumUsers}
-      reportInaccurate={boundReportInaccurate}
-      reportedInaccurateClasses={reportedInaccurateClasses}
     />
   );
 }
