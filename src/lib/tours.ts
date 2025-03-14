@@ -45,7 +45,7 @@ export const tours: Tour[] = [
         // showSkip: true,
       },
       {
-        icon: "ℹ️",
+        icon: "ℹ",
         title: "Set Weights",
         content: "Set the weights for each bucket of assignments",
         selector: "#weights-container",
@@ -114,9 +114,9 @@ export const tours: Tour[] = [
         title: "Sign In",
         content:
           "By default all your data is local on your device. You can log in to sync your data across devices and publish your own schemas",
-        selector: "#sign-in-button",
+        selector: "#sidebar-for-tour",
         showControls: true,
-        side: "top-left",
+        side: "right-top",
         pointerPadding: 12,
         pointerRadius: 12,
       },

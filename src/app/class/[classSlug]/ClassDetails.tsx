@@ -244,17 +244,23 @@ export default function ClassDetails(params: { classId: string }) {
               </Button>
             </div>
             {selectingState == SelectingStates.SELECTED && (
-              <P className="text-center text-lg font-bold">
-                Score necessary on selected assignment to get ≥ {targetGrade}%:{" "}
-                {(
-                  calculateScoreNecessary(
-                    selectedAssignment,
-                    selectedBucket,
-                    weights,
-                    targetGrade,
-                  ) * 100
-                ).toFixed(2)}
-              </P>
+              <>
+                <P className="text-center text-lg font-bold">
+                  Score necessary on selected assignment to get ≥ {targetGrade}
+                  %:{" "}
+                </P>
+                <P className="!mt-0 text-center text-lg font-bold">
+                  {(
+                    calculateScoreNecessary(
+                      selectedAssignment,
+                      selectedBucket,
+                      weights,
+                      targetGrade,
+                    ) * 100
+                  ).toFixed(2)}
+                  %
+                </P>
+              </>
             )}
           </div>
         </div>

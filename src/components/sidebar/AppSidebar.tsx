@@ -92,9 +92,7 @@ export async function AppSidebar() {
                 }}
               />
             ) : (
-              <div id="sign-in-button">
-                <SignIn />
-              </div>
+              <SignIn />
             )}
           </SidebarMenu>
         </SidebarFooter>
