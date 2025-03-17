@@ -21,7 +21,9 @@ export default function FrozenAssignments(params: { bucket: bucket }) {
         >
           <div className="grid grid-cols-12 items-center gap-2">
             <div className="col-span-9 truncate font-medium">
-              {assignment.name}
+              {assignment.name.length > 0
+                ? assignment.name
+                : "Untitled assignment"}
             </div>
             {/* <div className="col-span-3 text-center">
               <span className={cn(
@@ -43,7 +45,9 @@ export default function FrozenAssignments(params: { bucket: bucket }) {
       {bucket.assignments.length === 0 && (
         <div className="flex h-20 flex-col items-center justify-center rounded-md border border-dashed p-4 text-center">
           <P className="text-muted-foreground">No pre-filled assignments</P>
-          <P className="text-xs text-muted-foreground">Assignments will be added when you add this class</P>
+          <P className="text-xs text-muted-foreground">
+            Assignments will be added when you add this class
+          </P>
         </div>
       )}
     </div>
