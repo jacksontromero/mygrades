@@ -35,7 +35,7 @@ export function SearchClassesClient({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedUni, setSelectedUni] = useState<string | null>(null);
 
-  const { currentStep, setCurrentStep, closeNextStep, currentTour } = useNextStep();
+  const { setCurrentStep, closeNextStep, currentTour } = useNextStep();
 
   const handleSearch = async () => {
     if (searchQuery.length === 0) {
@@ -50,7 +50,7 @@ export function SearchClassesClient({
     setIsLoading(false);
 
     if (currentTour === "search-class-tour") {
-      setCurrentStep(currentStep + 1);
+      setCurrentStep(1);
     }
   };
 
@@ -165,7 +165,12 @@ export function SearchClassesClient({
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => window.open(`/class-template/${course.id}`, '_blank')}
+                              onClick={() =>
+                                window.open(
+                                  `/class-template/${course.id}`,
+                                  "_blank",
+                                )
+                              }
                             >
                               <ExternalLink size={18} />
                             </Button>
