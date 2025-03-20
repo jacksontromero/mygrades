@@ -225,6 +225,7 @@ export default function ClassForm(params: {
                                 readOnly={formType === ClassFormType.PUBLISH}
                                 min={0}
                                 max={100}
+                                step="any"
                                 onWheel={(e) =>
                                   (e.target as HTMLElement).blur()
                                 }
