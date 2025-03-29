@@ -263,7 +263,7 @@ export default function ClassOptions(params: {
             case WhichDialog.EDIT:
               return (
                 <DialogContent
-                  className="z-50w-full max-w-[700px]"
+                  className="z-50w-full max-w-[700px] overflow-y-scroll max-h-screen"
                   onInteractOutside={(e) => {
                     e.preventDefault();
                   }}
@@ -283,7 +283,7 @@ export default function ClassOptions(params: {
             case WhichDialog.PUBLISH:
               return (
                 <DialogContent
-                  className="z-50w-full max-w-[700px]"
+                  className="z-50w-full max-w-[700px] overflow-y-scroll max-h-screen"
                   onInteractOutside={(e) => {
                     e.preventDefault();
                   }}

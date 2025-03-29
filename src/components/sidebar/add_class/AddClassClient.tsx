@@ -132,7 +132,7 @@ export default function AddClassClient({
           </DialogTrigger>
           <DialogContent
             id="add-class-dialog"
-            className="w-full max-w-[800px]"
+            className="w-full max-w-[800px] overflow-y-scroll max-h-screen"
             onInteractOutside={(e) => {
               e.preventDefault();
             }}

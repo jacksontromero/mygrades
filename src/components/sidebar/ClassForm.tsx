@@ -288,14 +288,14 @@ export default function ClassForm(params: {
                         )}
                       />
                     </div>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger
+                    {formType != ClassFormType.PUBLISH && (
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger
                           className="-mt-7"
                           type="button"
                           onClick={() => remove(index)}
-                          disabled={formType === ClassFormType.PUBLISH}
-                          style={{ opacity: formType === ClassFormType.PUBLISH ? 0.5 : 1, cursor: formType === ClassFormType.PUBLISH ? 'not-allowed' : 'pointer' }}
+                          style={{ opacity: 1, cursor: 'pointer' }}
                         >
                           <Trash2Icon className="text-destructive" size={20} />
                         </TooltipTrigger>
@@ -304,20 +304,22 @@ export default function ClassForm(params: {
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    )}
                   </div>
                 </div>
               );
             })}
-            <div className="flex justify-between gap-1 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => append(defaultBucket())}
-                disabled={formType === ClassFormType.PUBLISH || bucketsSum >= 100}
-              >
-                Add Bucket
-              </Button>
-            </div>
+            {formType != ClassFormType.PUBLISH && (
+              <div className="flex justify-between gap-1 pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => append(defaultBucket())}
+                >
+                  Add Bucket
+                </Button>
+              </div>
+            )}
           </div>
         </div>
         <Separator className="mx-2 my-4"></Separator>
