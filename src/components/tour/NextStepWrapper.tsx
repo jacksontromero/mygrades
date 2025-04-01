@@ -34,7 +34,7 @@ export default function NextStepWrapper({
 
         // console.log("onStart", tourName);
         if (tourName && tourStatus[tourName]) {
-          console.log("skipping tour, already finished", tourName);
+          // console.log("skipping tour, already finished", tourName);
           closeNextStep();
           return;
         }
@@ -76,7 +76,7 @@ export default function NextStepWrapper({
         }
       }}
       onComplete={(tourName) => {
-        console.log("onComplete", tourName);
+        // console.log("onComplete", tourName);
         if (tourName) {
           setTourStatus(tourName, true);
         }
