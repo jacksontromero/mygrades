@@ -1,6 +1,6 @@
 "use client";
 
-import { serverDataStore, useDataStore } from "@/data/store";
+import { CURRENT_SCHEMA_VERSION, serverDataStore, useDataStore } from "@/data/store";
 import { useEffect, useState } from "react";
 import { Small } from "../ui/typography";
 import { Button } from "../ui/button";
@@ -49,7 +49,7 @@ export default function SaveChanges(params: {
         onClick={() => {
           const res = updateServerStore({
             classes: wholeStore.classes,
-            schemaVersion: 0,
+            schemaVersion: CURRENT_SCHEMA_VERSION,
             tourStatus: wholeStore.tourStatus
           });
 

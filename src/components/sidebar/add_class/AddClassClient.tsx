@@ -80,7 +80,7 @@ export default function AddClassClient({
       number: formData.courseNumber,
       weights: formData.buckets,
       selectingState: SelectingStates.FIRST_LOAD,
-      selectedBucket: null,
+      selectedBucketId: null,
       selectedAssignment: null,
       targetGrade: 90,
       published: false,

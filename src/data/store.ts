@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 
+export const CURRENT_SCHEMA_VERSION = 1;
+
 export enum SelectingStates {
   FIRST_LOAD,
   SELECTED,
@@ -31,7 +33,7 @@ export type schoolClass = {
   weights: bucket[];
   id: string;
   selectingState: SelectingStates;
-  selectedBucket: bucket | null;
+  selectedBucketId: string | null;
   selectedAssignment: assignment | null;
   targetGrade: number;
   published: boolean;
@@ -44,13 +46,19 @@ export type serverDataStore = {
 };
 
 export type globalDataStore = {
+  schemaVersion: number;
+  updateSchemaVersion: (newVersion: number) => void;
   _hasHydrated: boolean;
   setHasHydrated: (hasHydrated: boolean) => void;
   classes: Record<string, schoolClass>;
   addClass: (newClass: schoolClass) => void;
   editClass: (classId: string, newClass: schoolClass) => void;
   resetSelectAssignment: (classId: string, newState: SelectingStates) => void;
-  pickSelectedAssignment: (classId: string, a: assignment, b: bucket) => void;
+  pickSelectedAssignment: (
+    classId: string,
+    a: assignment,
+    bucketId: string,
+  ) => void;
   setTargetGrade: (classId: string, newTarget: number) => void;
   addNewAssignment: (classId: string, bucketId: string) => void;
   removeAssignment: (
@@ -107,7 +115,11 @@ export const useDataStore = create<globalDataStore>()(
   persist(
     immer((set) => ({
       classes: {} as Record<string, schoolClass>,
-
+      schemaVersion: CURRENT_SCHEMA_VERSION,
+      updateSchemaVersion: (newVersion: number) =>
+        set((state) => {
+          state.schemaVersion = newVersion;
+        }),
       _hasHydrated: false as boolean,
       setHasHydrated: (hasHydrated: boolean) =>
         set((state) => {
@@ -138,14 +150,18 @@ export const useDataStore = create<globalDataStore>()(
       resetSelectAssignment: (classId: string, newState: SelectingStates) =>
         set((state) => {
           state.classes[classId]!.selectedAssignment = null;
-          state.classes[classId]!.selectedBucket = null;
+          state.classes[classId]!.selectedBucketId = null;
           state.classes[classId]!.selectingState = newState;
         }),
 
-      pickSelectedAssignment: (classId: string, a: assignment, b: bucket) =>
+      pickSelectedAssignment: (
+        classId: string,
+        a: assignment,
+        bucketId: string,
+      ) =>
         set((state) => {
           state.classes[classId]!.selectedAssignment = a;
-          state.classes[classId]!.selectedBucket = b;
+          state.classes[classId]!.selectedBucketId = bucketId;
           state.classes[classId]!.selectingState = SelectingStates.SELECTED;
         }),
 
@@ -233,9 +249,80 @@ export const useDataStore = create<globalDataStore>()(
     {
       name: "finals-calculator",
       storage: createJSONStorage(() => localStorage),
-      onRehydrateStorage: (state) => {
-        return () => state.setHasHydrated(true);
+      onRehydrateStorage: () => {
+        return (state, error) => {
+          if (state) {
+            migrateClientStoreIfNeeded(state);
+            state.setHasHydrated(true);
+          }
+          if (error) {
+            console.error("Error rehydrating store", error);
+          }
+        };
       },
     },
   ),
 );
+
+export function migrateClientStoreIfNeeded(store: globalDataStore) {
+  if (store.schemaVersion < CURRENT_SCHEMA_VERSION) {
+    // migrate from schema version 0 to 1
+    // change selectedBucket to selectedBucketId
+    if (CURRENT_SCHEMA_VERSION === 1) {
+      console.log("migrating client store to version 1");
+      for (const [id, classObj] of Object.entries(store.classes)) {
+        if ("selectedBucket" in (classObj as any)) {
+          console.log(
+            "Changing selectedBucket to selectedBucketId for class",
+            id,
+          );
+          const updatedClassObj = { ...classObj } as any;
+          if (updatedClassObj.selectedBucket !== null) {
+            updatedClassObj.selectedBucketId =
+              updatedClassObj.selectedBucket.id;
+          } else {
+            updatedClassObj.selectedBucketId = null;
+          }
+
+          delete updatedClassObj.selectedBucket;
+          store.editClass(id, updatedClassObj as schoolClass);
+        }
+      }
+    }
+  }
+
+  store.updateSchemaVersion(CURRENT_SCHEMA_VERSION);
+}
+export function migrateServerStoreIfNeeded(store: serverDataStore) {
+  const newStore = { ...store };
+
+  if (store.schemaVersion < CURRENT_SCHEMA_VERSION) {
+    // migrate from schema version 0 to 1
+    // change selectedBucket to selectedBucketId
+    if (CURRENT_SCHEMA_VERSION === 1) {
+      console.log("migrating server store to version 1");
+      for (const [id, classObj] of Object.entries(store.classes)) {
+        if (!("selectedBucketId" in (classObj as any))) {
+          console.log(
+            "Selected bucket id not found in server store, adding it from selectedBucket for class",
+            id,
+          );
+          const updatedClassObj = { ...classObj } as any;
+          if (updatedClassObj.selectedBucket !== null) {
+            updatedClassObj.selectedBucketId =
+              updatedClassObj.selectedBucket.id;
+          } else {
+            updatedClassObj.selectedBucketId = null;
+          }
+
+          delete updatedClassObj.selectedBucket;
+          newStore.classes[id] = updatedClassObj as schoolClass;
+        }
+      }
+    }
+  }
+
+  newStore.schemaVersion = CURRENT_SCHEMA_VERSION;
+
+  return newStore;
+}

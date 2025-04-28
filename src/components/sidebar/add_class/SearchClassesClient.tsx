@@ -66,7 +66,7 @@ export function SearchClassesClient({
       number: serverData.number,
       weights: serverData.weights,
       selectingState: SelectingStates.FIRST_LOAD,
-      selectedBucket: null,
+      selectedBucketId: null,
       selectedAssignment: null,
       targetGrade: 90,
       published: true,

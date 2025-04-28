@@ -3,7 +3,6 @@
 import { auth } from "@/server/auth";
 import { getUserStore } from "@/server/authorized-queries";
 import PopulateStore from "./PopulateStore";
-
 export default async function StoreManager() {
   const session = await auth();
 

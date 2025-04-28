@@ -54,32 +54,35 @@ export function calculateScores(b: bucket): { dropped: number; raw: number } {
 
 function calculateScoreNecessary(
   selectedAssignment: assignment | null,
-  selectedBucket: bucket | null,
+  selectedBucketId: string | null,
   weights: bucket[],
   targetGrade: number,
 ): number {
-  if (selectedAssignment == null || selectedBucket == null) {
+  if (selectedAssignment == null || selectedBucketId == null) {
     return 0;
   }
 
   let totalPercentage = 0;
 
   for (const b of weights) {
-    if (b.id !== selectedBucket.id) {
+    if (b.id !== selectedBucketId) {
       totalPercentage += calculateScores(b).dropped * b.percentage;
     }
   }
 
   totalPercentage /= 100;
 
+  const selectedBucket = weights.find((x) => x.id === selectedBucketId)!!;
+
+  // what's the percentage needed in the final bucket to get the target grade?
   const percentFinalBucketNeeded =
     (targetGrade / 100 - totalPercentage) / (selectedBucket.percentage / 100);
 
   // calculate score needed for assignment within bucket
-
   const assignmentsWithoutSelected = selectedBucket.assignments.filter(
     (x) => x.id !== selectedAssignment?.id,
   );
+
   const nonSim = assignmentsWithoutSelected.filter((x) => !x.simulated);
   const totalNonSimScore = nonSim.reduce((acc, x) => acc + x.score, 0);
   const totalNonSimPoints = nonSim.reduce((acc, x) => acc + x.outOf, 0);
@@ -96,9 +99,11 @@ function calculateScoreNecessary(
         },
   );
 
+  // TODO - this drops by percent instead of by num points lost? Is this right?
   const sorted = simulated.sort(
     (a1, a2) => a2.score / a2.outOf - a1.score / a1.outOf,
   );
+
   const dropped = sorted.slice(0, sorted.length - selectedBucket.drops);
 
   const totalDroppedScore = dropped.reduce((acc, x) => acc + x.score, 0);
@@ -111,6 +116,7 @@ function calculateScoreNecessary(
   const percentageForTarget =
     (percentageAddNecessary * (totalDroppedPoints + selectedAssignment.outOf)) /
     selectedAssignment.outOf;
+
   return percentageForTarget < 0 ? 0 : percentageForTarget;
 }
 
@@ -134,9 +140,10 @@ export default function ClassDetails(params: { classId: string }) {
   const selectedAssignment = useDataStore(
     (state) => state.classes[classId]!.selectedAssignment,
   );
-  const selectedBucket = useDataStore(
-    (state) => state.classes[classId]!.selectedBucket,
+  const selectedBucketId = useDataStore(
+    (state) => state.classes[classId]!.selectedBucketId,
   );
+
   const weights = useDataStore((state) => state.classes[classId]!.weights);
   const targetGrade = useDataStore(
     (state) => state.classes[classId]!.targetGrade,
@@ -253,7 +260,7 @@ export default function ClassDetails(params: { classId: string }) {
                   {(
                     calculateScoreNecessary(
                       selectedAssignment,
-                      selectedBucket,
+                      selectedBucketId,
                       weights,
                       targetGrade,
                     ) * 100

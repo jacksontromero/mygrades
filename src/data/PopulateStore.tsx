@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { schoolClass, serverDataStore, useDataStore } from "./store";
+import { migrateServerStoreIfNeeded, schoolClass, serverDataStore, useDataStore } from "./store";
 import { isEqual } from "lodash";
 import {
   AlertDialog,
@@ -17,12 +17,16 @@ import { P } from "@/components/ui/typography";
 export default function PopulateStore(params: {
   serverStore: serverDataStore | null;
 }) {
-  const { serverStore } = params;
+  let { serverStore } = params;
   const existingStore = useDataStore((state) => state);
   const [runOnce, setRunOnce] = useState(false);
 
   const [mismatechDialogOpen, setMismatchedDialogOpen] = useState(false);
   const [mismatchedClasses, setMismatchedClasses] = useState<schoolClass[]>([]);
+
+  if (serverStore) {
+    serverStore = migrateServerStoreIfNeeded(serverStore);
+  }
 
   useEffect(() => {
     if (serverStore && existingStore._hasHydrated && !runOnce) {

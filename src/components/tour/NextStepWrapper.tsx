@@ -22,6 +22,7 @@ export default function NextStepWrapper({
 
   return (
     <NextStep
+      disableConsoleLogs={true}
       steps={tours}
       shadowOpacity={opacity}
       cardComponent={ShadcnDarkModeCard}
