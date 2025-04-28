@@ -72,7 +72,11 @@ function calculateScoreNecessary(
 
   totalPercentage /= 100;
 
-  const selectedBucket = weights.find((x) => x.id === selectedBucketId)!!;
+  const selectedBucket = weights.find((x) => x.id === selectedBucketId);
+
+  if (!selectedBucket) {
+    return 0;
+  }
 
   // what's the percentage needed in the final bucket to get the target grade?
   const percentFinalBucketNeeded =

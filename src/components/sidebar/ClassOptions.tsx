@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseSyntheticEvent, useState, KeyboardEvent } from "react";
+import { BaseSyntheticEvent, useState } from "react";
 import {
   Dialog,
   DialogContent,

@@ -35,6 +35,8 @@ const config = {
         },
       },
     ],
+    "@typescript-eslint/no-unsafe-assignment": "warn",
+    "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-non-null-asserted-optional-chain": "warn",
     "@typescript-eslint/unbound-method": "warn",
