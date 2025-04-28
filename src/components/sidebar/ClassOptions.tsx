@@ -1,6 +1,6 @@
 "use client";
 
-import { BaseSyntheticEvent, useState } from "react";
+import { BaseSyntheticEvent, useState, KeyboardEvent } from "react";
 import {
   Dialog,
   DialogContent,
@@ -88,7 +88,7 @@ export default function ClassOptions(params: {
       number: formData.courseNumber,
       weights: formData.buckets,
       selectingState: SelectingStates.FIRST_LOAD,
-      selectedBucket: null,
+      selectedBucketId: null,
       selectedAssignment: null,
       targetGrade: 90,
       published: existingClass.published,
@@ -182,6 +182,17 @@ export default function ClassOptions(params: {
   );
 
   const { currentStep, currentTour, closeNextStep } = useNextStep();
+
+  const handleDeleteKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      // Prevent default behavior (like triggering the cancel button)
+      event.preventDefault();
+      // Perform the delete action
+      deleteClass(existingClass.id);
+      // Close the dialog
+      setDeleteDialogOpen(false);
+    }
+  };
 
   return (
     <div className="h-full">
@@ -303,8 +314,8 @@ export default function ClassOptions(params: {
           }
         })()}
       </Dialog>
-      <AlertDialog open={deleteDialogOpen}>
-        <AlertDialogContent>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent onKeyDown={handleDeleteKeyDown}>
           <AlertDialogHeader>
             <AlertDialogTitle>
               Are you sure you want to delete {existingClass.name}?

@@ -150,6 +150,8 @@ export default function Assignments(params: {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger
+                        tabIndex={-1}
+                        type="button"
                         onClick={() =>
                           removeAssignment(classId, bucket.id, x.id)
                         }
@@ -187,7 +189,7 @@ export default function Assignments(params: {
             <Button
               variant="outline"
               size="default"
-              onClick={() => pickSelectedAssignment(classId, x, bucket)}
+              onClick={() => pickSelectedAssignment(classId, x, bucket.id)}
             >
               {x.name == "" ? `Unnamed Assignment ${i + 1}` : x.name}
             </Button>
